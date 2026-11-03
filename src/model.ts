@@ -1,4 +1,11 @@
-export type Tradition = "persian" | "japanese" | "mexican";
+export type Tradition =
+  | "persian"
+  | "japanese"
+  | "mexican"
+  | "zen"
+  | "nature"
+  | "tao"
+  | "mountain";
 export type TemplateId =
   | "stars"
   | "manuscript"
@@ -8,7 +15,19 @@ export type TemplateId =
   | "ink"
   | "marigold"
   | "papel"
-  | "memory";
+  | "memory"
+  | "enso"
+  | "sand"
+  | "lotus"
+  | "herbarium"
+  | "willow"
+  | "meadow"
+  | "river"
+  | "balance"
+  | "clouds"
+  | "alpine"
+  | "mist"
+  | "contours";
 export type Palette = {
   name: string;
   paper: string;
@@ -76,6 +95,30 @@ export const traditions: {
     mark: "◒",
   },
   { id: "mexican", label: "Mexicana", region: "Flores & memoria", mark: "✿" },
+  {
+    id: "zen",
+    label: "Zen",
+    region: "Vacío, piedra & contemplación",
+    mark: "◯",
+  },
+  {
+    id: "nature",
+    label: "Naturaleza",
+    region: "Hojas, agua & estaciones",
+    mark: "❧",
+  },
+  {
+    id: "tao",
+    label: "Taoísta",
+    region: "Equilibrio & el curso del agua",
+    mark: "☯",
+  },
+  {
+    id: "mountain",
+    label: "Montaña",
+    region: "Cumbres, niebla & senderos",
+    mark: "△",
+  },
 ];
 export const palettes: Palette[] = [
   {
@@ -119,6 +162,34 @@ export const palettes: Palette[] = [
     ornament: "#713e67",
     detail: "#ba5b72",
     ink: "#57334d",
+  },
+  {
+    name: "Piedra y arena",
+    paper: "#ede8dc",
+    ornament: "#555950",
+    detail: "#b38a62",
+    ink: "#383f37",
+  },
+  {
+    name: "Bosque de helechos",
+    paper: "#e9ebdf",
+    ornament: "#49624b",
+    detail: "#a78b51",
+    ink: "#304536",
+  },
+  {
+    name: "Agua de jade",
+    paper: "#e6eddf",
+    ornament: "#4b756b",
+    detail: "#ab8350",
+    ink: "#304d46",
+  },
+  {
+    name: "Cumbres azules",
+    paper: "#e9edf0",
+    ornament: "#4c6678",
+    detail: "#ae8b64",
+    ink: "#2c4354",
   },
 ];
 export const templates: Template[] = [
@@ -207,6 +278,155 @@ export const templates: Template[] = [
       ornament: "#45463c",
       detail: "#98613e",
       ink: "#363a31",
+    },
+  },
+  {
+    id: "enso",
+    tradition: "zen",
+    name: "Círculo del instante",
+    subtitle: "La forma de lo incompleto",
+    description:
+      "Un ensō abierto, trazado en capas de tinta, rodea el espacio donde descansa el poema.",
+    palette: palettes[6],
+  },
+  {
+    id: "sand",
+    tradition: "zen",
+    name: "Jardín de grava",
+    subtitle: "El silencio entre las piedras",
+    description:
+      "Surcos concéntricos, tres piedras y un espacio despejado inspirado en los jardines secos.",
+    palette: {
+      ...palettes[6],
+      name: "Arena serena",
+      ornament: "#8c866e",
+      detail: "#53594f",
+    },
+  },
+  {
+    id: "lotus",
+    tradition: "zen",
+    name: "Loto al alba",
+    subtitle: "Florecer en la quietud",
+    description:
+      "Un loto de líneas delicadas se abre sobre el agua, bajo la luz de una luna tenue.",
+    palette: {
+      name: "Rosa de loto",
+      paper: "#f2e9e3",
+      ornament: "#956d73",
+      detail: "#9a925f",
+      ink: "#58474c",
+    },
+  },
+  {
+    id: "herbarium",
+    tradition: "nature",
+    name: "Herbario",
+    subtitle: "La memoria de una hoja",
+    description:
+      "Frondas de helecho y nervaduras botánicas enmarcan una página de cuaderno de campo.",
+    palette: palettes[7],
+  },
+  {
+    id: "willow",
+    tradition: "nature",
+    name: "Sauce junto al agua",
+    subtitle: "Donde se inclina el viento",
+    description:
+      "Una cortina ligera de hojas de sauce y reflejos de agua dejan el centro abierto a tus versos.",
+    palette: palettes[8],
+  },
+  {
+    id: "meadow",
+    tradition: "nature",
+    name: "Pradera de luz",
+    subtitle: "Lo pequeño también florece",
+    description:
+      "Flores silvestres, espigas y semillas dibujadas a línea nacen al pie de la composición.",
+    palette: {
+      name: "Miel de verano",
+      paper: "#f4eddb",
+      ornament: "#6c7851",
+      detail: "#b28a45",
+      ink: "#48513b",
+    },
+  },
+  {
+    id: "river",
+    tradition: "tao",
+    name: "El curso del agua",
+    subtitle: "Seguir sin forzar",
+    description:
+      "Un cauce sinuoso acompaña el borde de la página; pequeñas ondas sugieren un movimiento continuo.",
+    palette: palettes[8],
+  },
+  {
+    id: "balance",
+    tradition: "tao",
+    name: "La quietud de los opuestos",
+    subtitle: "Dos fuerzas, un mismo círculo",
+    description:
+      "Un pequeño taijitu y dos arcos complementarios componen un equilibrio de tinta y vacío.",
+    palette: {
+      name: "Tinta y jade",
+      paper: "#f0eee1",
+      ornament: "#354d49",
+      detail: "#a98a57",
+      ink: "#304541",
+    },
+  },
+  {
+    id: "clouds",
+    tradition: "tao",
+    name: "Nubes errantes",
+    subtitle: "El cielo no retiene nada",
+    description:
+      "Volutas de nubes y hilos de aire recorren los extremos, como un paisaje que apenas empieza.",
+    palette: {
+      name: "Celadón del cielo",
+      paper: "#edf0e6",
+      ornament: "#6d887c",
+      detail: "#ae9870",
+      ink: "#415a50",
+    },
+  },
+  {
+    id: "alpine",
+    tradition: "mountain",
+    name: "Cordillera",
+    subtitle: "El horizonte que nos llama",
+    description:
+      "Cumbres angulares, pequeñas laderas nevadas y un cielo de estrellas en una página de explorador.",
+    palette: palettes[9],
+  },
+  {
+    id: "mist",
+    tradition: "mountain",
+    name: "Valle de niebla",
+    subtitle: "La distancia se vuelve calma",
+    description:
+      "Laderas superpuestas en transparencias suaves se pierden bajo una luna pálida.",
+    palette: {
+      name: "Bruma de pino",
+      paper: "#e9eade",
+      ornament: "#5f7b70",
+      detail: "#a68a5d",
+      ink: "#364e45",
+    },
+  },
+  {
+    id: "contours",
+    tradition: "mountain",
+    name: "Senderos de altura",
+    subtitle: "La poesía del relieve",
+    description:
+      "Curvas de nivel trazadas una a una, un pequeño rumbo y el rastro discontinuo de un sendero.",
+    palette: {
+      name: "Mapa de otoño",
+      paper: "#eee7d5",
+      ornament: "#858363",
+      detail: "#a46c48",
+      ink: "#4c503d",
     },
   },
 ];

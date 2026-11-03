@@ -389,13 +389,13 @@ export default function App() {
         <aside className="library panel">
           <div className="panel-heading">
             <h2>La colección</h2>
-            <span>01 — 09</span>
+            <span>01 — {String(templates.length).padStart(2, "0")}</span>
           </div>
-          <SectionLabel>TRADICIÓN ARTÍSTICA</SectionLabel>
+          <SectionLabel>ESTILO Y TRADICIÓN</SectionLabel>
           <div
             className="traditions"
             role="tablist"
-            aria-label="Tradición artística"
+            aria-label="Estilo y tradición"
           >
             {traditions.map((t) => (
               <button
@@ -412,12 +412,14 @@ export default function App() {
           </div>
           <div className="collection-caption">
             <span>{traditions.find((t) => t.id === tradition)!.region}</span>
-            <span>3 marcos</span>
+            <span>
+              {templates.filter((t) => t.tradition === tradition).length} marcos
+            </span>
           </div>
           <div className="template-list">
             {templates
               .filter((t) => t.tradition === tradition)
-              .map((t, i) => (
+              .map((t) => (
                 <button
                   className={`template-card ${design.template === t.id ? "selected" : ""}`}
                   key={t.id}
@@ -437,10 +439,7 @@ export default function App() {
                   </div>
                   <div>
                     <span className="template-number">
-                      0
-                      {traditions.findIndex((f) => f.id === tradition) * 3 +
-                        i +
-                        1}
+                      {String(templates.indexOf(t) + 1).padStart(2, "0")}
                     </span>
                     <h3>{t.name}</h3>
                     <p>{t.subtitle}</p>

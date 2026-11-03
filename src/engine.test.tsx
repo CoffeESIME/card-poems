@@ -1,12 +1,18 @@
 import { describe, expect, it } from "vitest";
 import { renderToStaticMarkup } from "react-dom/server";
 import { Composition, readingInset, starPoints } from "./Composition";
-import { changeTemplate, dimensions, freshDesign, templates } from "./model";
+import {
+  changeTemplate,
+  dimensions,
+  freshDesign,
+  templates,
+  traditions,
+} from "./model";
 import { wrapPoem } from "./text";
 import { supportsText } from "./fonts";
 
 describe("ornamental library", () => {
-  it("renders all nine designs in every format with resolved SVG references", () => {
+  it("renders all 21 designs in every format with resolved SVG references", () => {
     const distinct = new Set();
     for (const template of templates)
       for (const format of ["square", "story", "portrait"] as const) {
@@ -24,7 +30,33 @@ describe("ornamental library", () => {
         if (format === "square")
           distinct.add(markup.replace(/f_R_[^"\s)]+/g, "ID"));
       }
-    expect(distinct.size).toBe(9);
+    expect(distinct.size).toBe(21);
+  });
+  it("exposes seven complete collections with stable unique template IDs", () => {
+    expect(new Set(templates.map((t) => t.id)).size).toBe(21);
+    expect(traditions).toHaveLength(7);
+    for (const tradition of traditions)
+      expect(
+        templates.filter((t) => t.tradition === tradition.id),
+      ).toHaveLength(3);
+  });
+  it("keeps new ornaments valid at both extremes of their customization controls", () => {
+    for (const t of templates.slice(9))
+      for (const decoration of ["all", "top", "bottom"] as const)
+        for (const factor of [0.5, 2]) {
+          const design = {
+            ...freshDesign(t.id),
+            format: "story" as const,
+            density: factor,
+            patternScale: factor,
+            decoration,
+            margin: factor === 0.5 ? 16 : 90,
+            innerMargin: 100,
+          };
+          const markup = renderToStaticMarkup(<Composition design={design} />);
+          expect(markup).not.toMatch(/NaN|Infinity|undefined/);
+          expect(markup).toContain('viewBox="0 0 1080 1920"');
+        }
   });
   it("retains a usable reading area at maximum margins", () => {
     for (const t of templates) {

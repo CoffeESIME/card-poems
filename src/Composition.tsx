@@ -2,6 +2,7 @@ import { useId, type ReactNode } from "react";
 import { dimensions, type Design } from "./model";
 import { fontFamilies } from "./fonts";
 import { wrapPoem } from "./text";
+import { landscapeFrames } from "./LandscapeFrames";
 
 export function starPoints(
   cx: number,
@@ -98,6 +99,18 @@ export function readingInset(d: Design) {
     marigold: 150,
     papel: 140,
     memory: 118,
+    enso: 162,
+    sand: 110,
+    lotus: 180,
+    herbarium: 165,
+    willow: 170,
+    meadow: 175,
+    river: 155,
+    balance: 170,
+    clouds: 160,
+    alpine: 220,
+    mist: 220,
+    contours: 130,
   }[d.template];
   return Math.min(330, Math.max(155, d.margin + clearance) + d.innerMargin);
 }
@@ -122,7 +135,11 @@ export function Composition({
     sw = 1.7 * d.thickness,
     unit = (100 * d.patternScale) / d.density;
   const inset = readingInset(d),
-    readWidth = w - inset * 2,
+    horizontalInset =
+      d.template === "alpine" || d.template === "mist"
+        ? Math.max(195, inset - 55)
+        : inset,
+    readWidth = w - horizontalInset * 2,
     readHeight = h - inset * 2;
   const corners = [
     [m + 51, m + 51, 0],
@@ -698,6 +715,8 @@ export function Composition({
         </>
       );
   }
+  const landscape = landscapeFrames({ design: d, id, w, h });
+  if (landscape) ({ frame, pattern, ornaments } = landscape);
   const family = fontFamilies[d.font];
   const ctx =
     typeof document !== "undefined"
@@ -743,7 +762,11 @@ export function Composition({
     Math.min(h - inset - fullHeight, centerY - fullHeight / 2),
   );
   const x =
-    d.align === "left" ? inset : d.align === "right" ? w - inset : w / 2;
+    d.align === "left"
+      ? horizontalInset
+      : d.align === "right"
+        ? w - horizontalInset
+        : w / 2;
   const anchor =
     d.align === "left" ? "start" : d.align === "right" ? "end" : "middle";
   const rtl =
@@ -915,7 +938,7 @@ export function Composition({
         </mask>
         <clipPath id={`${id}-textClip`}>
           <rect
-            x={inset - 3}
+            x={horizontalInset - 3}
             y={inset - 20}
             width={readWidth + 6}
             height={readHeight + 40}
@@ -1024,7 +1047,12 @@ export function Composition({
           strokeDasharray="10 9"
           pointerEvents="none"
         >
-          <rect x={inset} y={inset} width={readWidth} height={readHeight} />
+          <rect
+            x={horizontalInset}
+            y={inset}
+            width={readWidth}
+            height={readHeight}
+          />
           {d.format === "story" && (
             <>
               <rect x="65" y="250" width="835" height="1300" />

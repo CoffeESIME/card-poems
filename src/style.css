@@ -1856,3 +1856,49 @@ summary::-webkit-details-marker {
     width: min(490px, 100cqw, calc(100cqh * 0.8));
   }
 }
+/* A growing collection keeps every family visible and keyboard accessible. */
+.traditions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3px;
+}
+.traditions button {
+  min-width: 0;
+  padding: 9px 2px 8px;
+  gap: 5px;
+  font-size: 0.66rem;
+}
+.traditions button > span {
+  font-size: 1.3rem;
+}
+.traditions button:last-child:nth-child(3n + 1) {
+  grid-column: 1/-1;
+  flex-direction: row;
+  gap: 8px;
+  padding: 8px;
+}
+.palette-list {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 9px 10px;
+}
+@media (max-width: 620px) {
+  .traditions {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .traditions button {
+    flex-direction: column;
+    padding: 10px 2px;
+    font-size: 0.64rem;
+    gap: 7px;
+  }
+  .traditions button:last-child:nth-child(3n + 1) {
+    grid-column: auto;
+    flex-direction: column;
+    padding: 10px 2px;
+    gap: 7px;
+  }
+  .palette-list {
+    gap: 12px;
+  }
+}
