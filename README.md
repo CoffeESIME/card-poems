@@ -1,6 +1,6 @@
-# Folio · Taller de poesía visual
+# Folio · Taller de palabras
 
-Editor local para componer poemas con 21 marcos vectoriales en siete colecciones: Persa, Japonesa, Mexicana, Zen, Naturaleza, Taoísta y Montaña. React + TypeScript + Vite. Sin cuentas, backend, imágenes remotas ni servicios obligatorios durante el uso.
+Editor local para componer máximas, frases y poemas con 27 marcos vectoriales en nueve colecciones: Francesa, Caminantes, Persa, Japonesa, Mexicana, Zen, Naturaleza, Taoísta y Montaña. React + TypeScript + Vite. Sin cuentas, backend, imágenes remotas ni servicios obligatorios durante el uso.
 
 ## Iniciar
 
@@ -33,12 +33,14 @@ npm run preview  # Servir la compilación de producción
 
 El borrador se guarda automáticamente. La biblioteca y los presets usan `localStorage`, con claves versionadas `folio:*:v1`. Borrar los datos del navegador borra estos diseños. Exporta las imágenes que quieras conservar fuera del navegador. No hay sincronización entre dispositivos.
 
-Los textos muy largos se reducen automáticamente para caber. Si aun así superan el área de lectura, el editor avisa y detiene la exportación para evitar un poema recortado. Las guías sociales son orientativas: las interfaces de las plataformas pueden variar.
+Por defecto, los textos largos se reparten automáticamente en dos o más láminas al tamaño de letra elegido. El cálculo considera la fuente, el formato, los márgenes, el título, la autoría y los saltos de línea. Prefiere cortes de estrofa o de oración cuando caben, y conserva todas las líneas. Las flechas del lienzo permiten revisar cada lámina. Exportar una serie descarga un ZIP con imágenes numeradas en PNG, JPEG o SVG; también puedes descargar la lámina actual como PNG. La opción **Ajustar a una sola lámina** conserva el comportamiento de reducción de letra. Si aun así el texto no cabe, se bloquea la exportación para evitar recortes. Las guías sociales son orientativas: las interfaces de las plataformas pueden variar.
 
 ## Biblioteca ornamental
 
 | Tradición  | Marcos                                                          |
 | ---------- | --------------------------------------------------------------- |
+| Francesa | Ensayo renacentista · El salón de las máximas · El gabinete ilustrado |
+| Caminantes | Cuaderno del caminante · Notas del naturalista · La voz del bosque |
 | Persa      | Jardín de estrellas · Manuscrito persa · Geometría infinita     |
 | Japonesa   | Silencio · Olas eternas · Papel y tinta                         |
 | Mexicana   | Cempasúchil · Papel picado · Grabado de la memoria              |
@@ -51,9 +53,12 @@ Los diseños usan estrellas de 8, 10 y 12 puntas, repeticiones seigaiha, tramas 
 
 ## Estructura
 
-- `src/model.ts`: tipos, 21 plantillas, diez paletas generales, formatos y poemas originales de demostración.
+- `src/model.ts`: tipos, 27 plantillas, diez paletas generales, formatos y poemas originales de demostración.
 - `src/Composition.tsx`: motor SVG, geometría, capas y disposición del texto. Es el mismo componente en vista previa, miniaturas, biblioteca y exportación.
 - `src/LandscapeFrames.tsx`: las doce composiciones nuevas y sus motivos botánicos, paisajes y geometría contemplativa, organizados en las mismas tres capas decorativas.
+- `src/LiteraryFrames.tsx`: seis marcos para máximas francesas y textos de caminantes y naturalistas.
+- `src/layout.ts`: medición tipográfica y cálculo común de páginas para vista previa y exportación.
+- `src/zip.ts`: descarga conjunta de láminas con nombres numerados.
 - `src/text.ts`: división de versos con conservación de estrofas y caracteres Unicode.
 - `src/fonts.ts`: fuentes locales y selección de subconjuntos Unicode para incrustación.
 - `src/export.ts`: serialización SVG, fuentes incrustadas y rasterización a resolución nativa.
@@ -61,7 +66,7 @@ Los diseños usan estrellas de 8, 10 y 12 puntas, repeticiones seigaiha, tramas 
 - `src/App.tsx`: interacción del editor y biblioteca local.
 - `src/style.css`: diseño editorial, estados accesibles y adaptación a móvil.
 - `src/engine.test.tsx`: pruebas de geometría, referencias SVG, formatos, Unicode y conservación del poema.
-- `src/qa-gallery.tsx`: entrada de revisión visual; no se incluye en el build de producción. Durante desarrollo, `/.qa/index.html` muestra los 21 marcos en cuadrado y vertical; `/.qa/index.html?landscapes` muestra únicamente los doce nuevos.
+- `src/qa-gallery.tsx`: entrada de revisión visual; no se incluye en el build de producción. Durante desarrollo, `/.qa/index.html` muestra los 27 marcos en cuadrado y vertical; `/.qa/index.html?landscapes` muestra únicamente los doce paisajes.
 - `docs/`: capturas de revisión y notas de validación.
 
 Para incorporar otro marco, añade su identificador y metadatos en `model.ts`, su espacio de lectura en `readingInset` y su composición en `LandscapeFrames.tsx` (o en el motor original, `Composition.tsx`). Cada caso entrega tres capas: `pattern`, `frame` y `ornaments`. El resto del editor y los exportadores lo admiten sin modificaciones. Los motivos usan coordenadas locales y las dimensiones del formato para mantener sus proporciones. Los contadores y la numeración de la galería se calculan desde los metadatos.
@@ -70,4 +75,4 @@ Para incorporar otro marco, añade su identificador y metadatos en `model.ts`, s
 
 Cormorant Garamond, DM Sans, Noto Serif JP y Noto Naskh Arabic se distribuyen localmente mediante Fontsource, bajo sus licencias SIL Open Font License. Los paquetes originales incluyen sus archivos `LICENSE`; consulta `THIRD_PARTY_NOTICES.md`. Los iconos son de Lucide (ISC). Los marcos son geometría creada para este proyecto; no utilizan imágenes externas.
 
-La verificación visual se realizó con Chromium integrado. La representación de fuentes y filtros en lectores SVG distintos puede variar; el PNG conserva el resultado rasterizado del navegador.
+Las capturas de la versión anterior se realizaron con Chromium integrado. La ampliación de máximas y láminas tiene comprobaciones automatizadas; su revisión visual en el navegador integrado quedó pendiente por un fallo de conexión al servidor local. La representación de fuentes y filtros en lectores SVG distintos puede variar; el PNG conserva el resultado rasterizado del navegador.

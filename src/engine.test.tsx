@@ -8,11 +8,14 @@ import {
   templates,
   traditions,
 } from "./model";
-import { wrapPoem } from "./text";
+import { layoutText } from "./layout";
+import { hydrateDesign } from "./storage";
+import { zipImages } from "./zip";
+import { paginateLines, wrapPoem } from "./text";
 import { supportsText } from "./fonts";
 
 describe("ornamental library", () => {
-  it("renders all 21 designs in every format with resolved SVG references", () => {
+  it("renders all 27 designs in every format with resolved SVG references", () => {
     const distinct = new Set();
     for (const template of templates)
       for (const format of ["square", "story", "portrait"] as const) {
@@ -30,18 +33,18 @@ describe("ornamental library", () => {
         if (format === "square")
           distinct.add(markup.replace(/f_R_[^"\s)]+/g, "ID"));
       }
-    expect(distinct.size).toBe(21);
+    expect(distinct.size).toBe(27);
   });
-  it("exposes seven complete collections with stable unique template IDs", () => {
-    expect(new Set(templates.map((t) => t.id)).size).toBe(21);
-    expect(traditions).toHaveLength(7);
+  it("exposes nine complete collections with stable unique template IDs", () => {
+    expect(new Set(templates.map((t) => t.id)).size).toBe(27);
+    expect(traditions).toHaveLength(9);
     for (const tradition of traditions)
       expect(
         templates.filter((t) => t.tradition === tradition.id),
       ).toHaveLength(3);
   });
   it("keeps new ornaments valid at both extremes of their customization controls", () => {
-    for (const t of templates.slice(9))
+    for (const t of templates)
       for (const decoration of ["all", "top", "bottom"] as const)
         for (const factor of [0.5, 2]) {
           const design = {
@@ -121,5 +124,82 @@ describe("poem and font layout", () => {
     expect(supportsText("U+3040-309F", "jardín")).toBe(false);
     expect(supportsText("U+30??", "カ")).toBe(true);
     expect(supportsText("U+0600-06FF, U+200C-200D", "باغ")).toBe(true);
+  });
+});
+
+describe("multi-plate text", () => {
+  it("preserves every wrapped line and stanza across boundaries", () => {
+    const lines = [
+      "Une pensée.",
+      "",
+      "Un chemin",
+      "sans fin",
+      "",
+      "Dernière ligne.",
+    ];
+    const pages = paginateLines(lines, 3);
+    expect(pages.flat()).toEqual(lines);
+    expect(pages.every((page) => page.length <= 3)).toBe(true);
+    expect(paginateLines([], 3)).toEqual([[""]]);
+  });
+  it("keeps a short maxim on one plate and splits tall poems without shrinking", () => {
+    const d = { ...freshDesign("salon"), poem: "Une pensée.", author: "" };
+    expect(layoutText(d).pages).toHaveLength(1);
+    const long = {
+      ...d,
+      poem: Array.from({ length: 40 }, (_, i) => `Vers ${i}`).join("\n"),
+    };
+    const layout = layoutText(long);
+    expect(layout.pages.length).toBeGreaterThan(1);
+    expect(layout.size).toBe(d.fontSize);
+    expect(layout.pages.flat().join("\n")).toBe(long.poem);
+    expect(layoutText({ ...long, pagination: "single" }).pages).toHaveLength(1);
+  });
+  it("renders every page without overflow in all templates and formats", () => {
+    for (const t of templates)
+      for (const format of ["square", "story", "portrait"] as const) {
+        const d = {
+          ...freshDesign(t.id),
+          format,
+          title: "Réflexions",
+          poem: "Un camino, una hoja, una pausa. ".repeat(45),
+        };
+        const layout = layoutText(d);
+        expect(layout.pages.length).toBeGreaterThan(1);
+        for (let page = 0; page < layout.pages.length; page++) {
+          const html = renderToStaticMarkup(
+            <Composition design={d} page={page} />,
+          );
+          expect(html).toContain('data-overflow="false"');
+          expect(html).toContain(`${page + 1} / ${layout.pages.length}`);
+        }
+      }
+  });
+  it("hydrates older drafts with automatic pagination", () => {
+    const { pagination, ...old } = freshDesign();
+    expect(hydrateDesign(old).pagination).toBe("auto");
+  });
+  it("packages named images with valid offsets and standard CRC-32", async () => {
+    const zip = await zipImages([
+      { name: "lámina-01.svg", blob: new Blob(["123456789"]) },
+      { name: "lámina-02.png", blob: new Blob([new Uint8Array([1, 2, 3])]) },
+    ]);
+    const bytes = new Uint8Array(await zip.arrayBuffer()),
+      view = new DataView(bytes.buffer);
+    expect(view.getUint32(0, true)).toBe(0x04034b50);
+    expect(view.getUint32(14, true)).toBe(0xcbf43926);
+    const end = bytes.length - 22;
+    expect(view.getUint32(end, true)).toBe(0x06054b50);
+    expect(view.getUint16(end + 10, true)).toBe(2);
+    const central = view.getUint32(end + 16, true);
+    expect(view.getUint32(central, true)).toBe(0x02014b50);
+    const nameLength = view.getUint16(26, true);
+    expect(new TextDecoder().decode(bytes.slice(30, 30 + nameLength))).toBe(
+      "lámina-01.svg",
+    );
+    const second = central + 46 + nameLength;
+    const secondOffset = view.getUint32(second + 42, true);
+    expect(view.getUint32(secondOffset, true)).toBe(0x04034b50);
+    expect(view.getUint32(end + 12, true)).toBe(end - central);
   });
 });

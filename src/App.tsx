@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   AlignCenter,
   AlignLeft,
@@ -39,6 +39,8 @@ import {
   type Design,
   type Tradition,
 } from "./model";
+import { layoutText } from "./layout";
+import { zipImages } from "./zip";
 import { compositionBlob, download } from "./export";
 import {
   hydrateDesign,
@@ -154,6 +156,13 @@ export default function App() {
     [storageOk, setStorageOk] = useState(true);
   const [fontTick, setFontTick] = useState(0);
   const [textOverflow, setTextOverflow] = useState(false);
+  const [page, setPage] = useState(0);
+  const pageCount = useMemo(
+    () => layoutText(design).pages.length,
+    [design, fontTick],
+  );
+  const currentPage = Math.min(page, pageCount - 1);
+  useEffect(() => setPage(0), [design.id, design.poem]);
   const poemRef = useRef<HTMLTextAreaElement>(null),
     exportRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLElement>(null);
@@ -171,8 +180,9 @@ export default function App() {
   }, [design]);
   useEffect(() => {
     setTextOverflow(
-      exportRef.current?.querySelector("svg")?.getAttribute("data-overflow") ===
-        "true",
+      Array.from(exportRef.current?.querySelectorAll("svg") ?? []).some(
+        (svg) => svg.getAttribute("data-overflow") === "true",
+      ),
     );
   }, [design, fontTick]);
   useEffect(() => {
@@ -244,29 +254,41 @@ export default function App() {
         "No hay espacio para guardar. Exporta tu composición para conservarla.",
       );
   }
-  async function exportDesign(format: "png" | "svg" | "jpeg") {
+  async function exportDesign(format: "png" | "svg" | "jpeg", all = true) {
     if (textOverflow) {
       notify(
-        "El poema supera el área de lectura. Acórtalo o cambia al formato vertical.",
+        "El texto supera el área de lectura. Activa la separación automática o reduce el tamaño de letra.",
       );
       return;
     }
     setBusy(true);
     try {
-      const svg = exportRef.current?.querySelector("svg");
-      if (!svg) throw new Error("No se encontró el lienzo.");
-      const blob = await compositionBlob(svg, design, format);
-      download(
-        blob,
-        `${
-          design.name
-            .trim()
-            .replace(/[^\p{L}\p{N}-]+/gu, "-")
-            .slice(0, 70) || "folio"
-        }-${width}x${height}.${format === "jpeg" ? "jpg" : format}`,
-      );
+      const svgs = Array.from(exportRef.current?.querySelectorAll("svg") ?? []);
+      if (svgs.length !== pageCount)
+        throw new Error("No se encontró la serie completa.");
+      const name =
+        design.name
+          .trim()
+          .replace(/[^\p{L}\p{N}-]+/gu, "-")
+          .slice(0, 70) || "folio";
+      const extension = format === "jpeg" ? "jpg" : format;
+      const selected = all
+        ? svgs.map((svg, i) => ({ svg, i }))
+        : [{ svg: svgs[currentPage], i: currentPage }];
+      const files = [];
+      for (const { svg, i } of selected) {
+        files.push({
+          name: `${name}-${width}x${height}${pageCount > 1 ? `-lamina-${String(i + 1).padStart(2, "0")}` : ""}.${extension}`,
+          blob: await compositionBlob(svg, design, format),
+        });
+      }
+      if (files.length > 1)
+        download(await zipImages(files), `${name}-${format}-laminas.zip`);
+      else download(files[0].blob, files[0].name);
       setExportOpen(false);
-      notify(`Tu composición en ${format.toUpperCase()} está lista.`);
+      notify(
+        `${all ? pageCount : 1} lámina(s) en ${format.toUpperCase()} lista(s).`,
+      );
     } catch (e) {
       notify(
         e instanceof Error
@@ -295,6 +317,7 @@ export default function App() {
   const canvas = (
     <Composition
       design={design}
+      page={currentPage}
       guides={guides}
       onSelectText={() => {
         setPanel("text");
@@ -310,13 +333,13 @@ export default function App() {
           className="brand"
           href="#"
           onClick={(e) => e.preventDefault()}
-          aria-label="Folio, taller de poesía visual"
+          aria-label="Folio, taller de palabras"
         >
           <Mark />
           <span>
             folio<span className="brand-dot">.</span>
           </span>
-          <span className="brand-caption">TALLER DE POESÍA VISUAL</span>
+          <span className="brand-caption">TALLER DE PALABRAS</span>
         </a>
         <div className="header-actions">
           <span className={`draft-status ${!storageOk ? "error" : ""}`}>
@@ -340,7 +363,11 @@ export default function App() {
             </button>
             {exportOpen && (
               <div className="export-popover">
-                <SectionLabel>GUARDAR UNA IMAGEN</SectionLabel>
+                <SectionLabel>
+                  {pageCount > 1
+                    ? `DESCARGAR ${pageCount} LÁMINAS · ZIP`
+                    : "GUARDAR UNA IMAGEN"}
+                </SectionLabel>
                 <p>
                   {width} × {height} px · sin marcas de agua
                 </p>
@@ -363,6 +390,15 @@ export default function App() {
                     <ArrowDownToLine size={16} />
                   </button>
                 ))}
+                {pageCount > 1 && (
+                  <button
+                    disabled={busy}
+                    onClick={() => exportDesign("png", false)}
+                  >
+                    Solo lámina {currentPage + 1} · PNG
+                    <ArrowDownToLine size={16} />
+                  </button>
+                )}
                 {busy && <p role="status">Preparando tu composición…</p>}
               </div>
             )}
@@ -373,7 +409,7 @@ export default function App() {
         <div>
           <span className="eyebrow">EL ARTE DE DAR FORMA A LAS PALABRAS</span>
           <h1>
-            Un pequeño universo, <em>tus versos.</em>
+            Un pequeño universo, <em>tus palabras.</em>
           </h1>
         </div>
         <span className="heading-note">
@@ -545,6 +581,30 @@ export default function App() {
               </button>
             </div>
           </div>
+          <nav
+            className="page-navigation"
+            aria-label="Láminas de la composición"
+          >
+            <button
+              className="button quiet"
+              disabled={currentPage === 0}
+              onClick={() => setPage(currentPage - 1)}
+              aria-label="Lámina anterior"
+            >
+              ←
+            </button>
+            <span aria-live="polite">
+              Lámina <strong>{currentPage + 1}</strong> de {pageCount}
+            </span>
+            <button
+              className="button quiet"
+              disabled={currentPage === pageCount - 1}
+              onClick={() => setPage(currentPage + 1)}
+              aria-label="Lámina siguiente"
+            >
+              →
+            </button>
+          </nav>
           <div className={`canvas-stage format-${design.format}`}>
             <div
               className="canvas-paper"
@@ -619,7 +679,7 @@ export default function App() {
               onClick={() => setPanel("text")}
             >
               <Type size={15} />
-              Tu poema
+              Tu texto
             </button>
             <button
               role="tab"
@@ -641,13 +701,13 @@ export default function App() {
               </label>
               <input
                 id="poem-title"
-                placeholder="Dale un nombre a tu poema"
+                placeholder="Dale un nombre a tu texto"
                 value={design.title}
                 maxLength={150}
                 onChange={(e) => update({ title: e.target.value })}
               />
               <label className="field-label" htmlFor="poem">
-                Poema
+                Frase, máxima o poema
               </label>
               <div className="poem-field">
                 <textarea
@@ -657,7 +717,7 @@ export default function App() {
                   value={design.poem}
                   maxLength={6000}
                   onChange={(e) => update({ poem: e.target.value })}
-                  placeholder="Aquí empiezan tus versos…"
+                  placeholder="Aquí empieza tu texto…"
                 />
                 <span>{design.poem.length} caracteres</span>
               </div>
@@ -672,11 +732,28 @@ export default function App() {
                 onChange={(e) => update({ author: e.target.value })}
                 placeholder="Tu nombre o seudónimo"
               />
+              <label className="field-label" htmlFor="pagination">
+                Distribución del texto
+              </label>
+              <select
+                id="pagination"
+                value={design.pagination}
+                onChange={(e) =>
+                  update({ pagination: e.target.value as Design["pagination"] })
+                }
+              >
+                <option value="auto">Separar automáticamente en láminas</option>
+                <option value="single">Ajustar a una sola lámina</option>
+              </select>
+              <p className="pagination-help">
+                Conserva el tamaño de letra y los saltos de verso. Los textos
+                largos continúan en otra lámina; descarga la serie en un ZIP.
+              </p>
               <details className="examples">
                 <summary>
                   ¿Una página en blanco?
                   <span>
-                    Prueba un poema <ArrowUpRight size={12} />
+                    Prueba un texto <ArrowUpRight size={12} />
                   </span>
                 </summary>
                 <div>
@@ -701,7 +778,7 @@ export default function App() {
               <div className="control-section">
                 <SectionLabel>TIPOGRAFÍA</SectionLabel>
                 <select
-                  aria-label="Tipografía del poema"
+                  aria-label="Tipografía del texto"
                   value={design.font}
                   onChange={(e) =>
                     update({ font: e.target.value as Design["font"] })
@@ -842,7 +919,7 @@ export default function App() {
                       })
                     }
                   >
-                    <option value="below">Debajo del poema</option>
+                    <option value="below">Debajo del texto</option>
                     <option value="bottom">Al pie de la página</option>
                     <option value="hidden">Ocultar autoría</option>
                   </select>
@@ -852,7 +929,7 @@ export default function App() {
                   role={textOverflow ? "alert" : undefined}
                 >
                   {textOverflow
-                    ? "Este poema supera el área de lectura. Acórtalo o elige un formato vertical antes de exportar."
+                    ? "El texto supera el área de lectura. Activa la separación automática, reduce la letra o elige un formato vertical."
                     : "El texto se ajusta al espacio disponible para conservar la lectura."}
                 </p>
               </div>
@@ -993,7 +1070,7 @@ export default function App() {
                 className="button quiet full reset-button"
                 onClick={() => {
                   setDesign((d) => changeTemplate(d, template));
-                  notify("Marco restablecido. Tus versos siguen aquí.");
+                  notify("Marco restablecido. Tu texto sigue aquí.");
                 }}
               >
                 <RotateCcw size={13} />
@@ -1017,7 +1094,7 @@ export default function App() {
           FOLIO <span className="footer-star">✧</span> PALABRAS CON UN LUGAR EN
           EL MUNDO
         </span>
-        <span>Sin prisa. Sin ruido. Solo poesía.</span>
+        <span>Sin prisa. Sin ruido. Tus palabras.</span>
         <span>
           Todo se guarda en este navegador <span className="local-dot" />
         </span>
@@ -1038,7 +1115,21 @@ export default function App() {
             {canvas}
           </div>
           <span className="focus-caption">
-            {template.name} · {width} × {height} px
+            <button
+              className="button quiet"
+              disabled={currentPage === 0}
+              onClick={() => setPage(currentPage - 1)}
+            >
+              ←
+            </button>
+            {template.name} · {currentPage + 1} / {pageCount}
+            <button
+              className="button quiet"
+              disabled={currentPage === pageCount - 1}
+              onClick={() => setPage(currentPage + 1)}
+            >
+              →
+            </button>
           </span>
         </div>
       )}
@@ -1158,7 +1249,13 @@ export default function App() {
         </div>
       )}
       <div className="export-target" ref={exportRef} aria-hidden="true">
-        <Composition design={design} key={`export-${fontTick}`} />
+        {Array.from({ length: pageCount }, (_, i) => (
+          <Composition
+            design={design}
+            page={i}
+            key={`export-${fontTick}-${i}`}
+          />
+        ))}
       </div>
       <div className="mobile-tip">
         <Eye size={14} />

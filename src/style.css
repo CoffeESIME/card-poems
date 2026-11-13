@@ -1902,3 +1902,29 @@ summary::-webkit-details-marker {
     gap: 12px;
   }
 }
+
+.page-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 8px 12px;
+  border-bottom: 1px solid #dcdcd0;
+  font-size: 12px;
+  color: #5a6253;
+}
+.page-navigation .button {
+  padding: 4px 12px;
+  min-height: 32px;
+}
+.pagination-help {
+  font-size: 11px;
+  line-height: 1.6;
+  color: #636b5c;
+  margin: 10px 0 18px;
+}
+.focus-caption {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}

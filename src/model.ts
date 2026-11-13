@@ -5,7 +5,9 @@ export type Tradition =
   | "zen"
   | "nature"
   | "tao"
-  | "mountain";
+  | "mountain"
+  | "french"
+  | "wanderer";
 export type TemplateId =
   | "stars"
   | "manuscript"
@@ -27,7 +29,13 @@ export type TemplateId =
   | "clouds"
   | "alpine"
   | "mist"
-  | "contours";
+  | "contours"
+  | "renaissance"
+  | "salon"
+  | "encyclopedia"
+  | "walking"
+  | "fieldnotes"
+  | "woodland";
 export type Palette = {
   name: string;
   paper: string;
@@ -40,6 +48,7 @@ export type Design = {
   name: string;
   template: TemplateId;
   format: "square" | "story" | "portrait";
+  pagination: "auto" | "single";
   poem: string;
   title: string;
   author: string;
@@ -82,6 +91,18 @@ export const traditions: {
   region: string;
   mark: string;
 }[] = [
+  {
+    id: "french",
+    label: "Francesa",
+    region: "Máximas · siglos XVI, XVII y XVIII",
+    mark: "❦",
+  },
+  {
+    id: "wanderer",
+    label: "Caminantes",
+    region: "Paseos, ensayos & naturaleza",
+    mark: "⌁",
+  },
   {
     id: "persian",
     label: "Persa",
@@ -193,6 +214,97 @@ export const palettes: Palette[] = [
   },
 ];
 export const templates: Template[] = [
+  {
+    id: "renaissance",
+    tradition: "french",
+    name: "Ensayo renacentista",
+    subtitle: "Francia · siglo XVI",
+    description:
+      "Una portada humanista con filetes, rombos y viñeta de imprenta. Para pensamientos y fragmentos de ensayo.",
+    palette: {
+      name: "Ensayo renacentista",
+      paper: "#eee2c8",
+      ornament: "#6c3c2d",
+      detail: "#a18550",
+      ink: "#392b24",
+    },
+  },
+  {
+    id: "salon",
+    tradition: "french",
+    name: "El salón de las máximas",
+    subtitle: "Francia · siglo XVII",
+    description:
+      "Cartela y arabescos de salón para Pascal, La Rochefoucauld y La Bruyère.",
+    palette: {
+      name: "El salón de las máximas",
+      paper: "#f4eee0",
+      ornament: "#665342",
+      detail: "#aa8650",
+      ink: "#352e29",
+    },
+  },
+  {
+    id: "encyclopedia",
+    tradition: "french",
+    name: "El gabinete ilustrado",
+    subtitle: "Francia · siglo XVIII",
+    description:
+      "Reglas finas y un medallón geométrico para Vauvenargues y aforismos de la Ilustración.",
+    palette: {
+      name: "El gabinete ilustrado",
+      paper: "#e9edf0",
+      ornament: "#405b6c",
+      detail: "#9a8059",
+      ink: "#283e4c",
+    },
+  },
+  {
+    id: "walking",
+    tradition: "wanderer",
+    name: "Cuaderno del caminante",
+    subtitle: "El pensamiento a pie",
+    description:
+      "Un sendero sinuoso y horizontes abiertos para acompañar paseos y reflexiones.",
+    palette: {
+      name: "Cuaderno del caminante",
+      paper: "#efe7d4",
+      ornament: "#79704c",
+      detail: "#a46e43",
+      ink: "#454331",
+    },
+  },
+  {
+    id: "fieldnotes",
+    tradition: "wanderer",
+    name: "Notas del naturalista",
+    subtitle: "Observar lo pequeño",
+    description:
+      "Lámina de estudio con ramitas, semillas y anotaciones visuales de herbario. Para lecturas de Thoreau.",
+    palette: {
+      name: "Notas del naturalista",
+      paper: "#e8e9dc",
+      ornament: "#526849",
+      detail: "#9b814e",
+      ink: "#34452f",
+    },
+  },
+  {
+    id: "woodland",
+    tradition: "wanderer",
+    name: "La voz del bosque",
+    subtitle: "Ensayo & contemplación",
+    description:
+      "Siluetas de árboles y un sol entre ramas para fragmentos de Emerson, Carlyle y otros ensayistas.",
+    palette: {
+      name: "La voz del bosque",
+      paper: "#233e35",
+      ornament: "#b4ba8e",
+      detail: "#d2ae70",
+      ink: "#f1ead9",
+    },
+  },
+
   {
     id: "stars",
     tradition: "persian",
@@ -456,6 +568,21 @@ export const examples = [
     poem: "در باغِ شب، ستاره آرام می‌روید\nو باد، نامِ برگ‌ها را می‌خواند",
     author: "سرودهٔ این کارگاه",
   },
+  {
+    label: "Máxima · ejemplo del taller",
+    poem: "A veces llamamos certeza a una duda que ha dejado de hacernos preguntas.",
+    author: "Texto de este taller",
+  },
+  {
+    label: "Paseo · ejemplo del taller",
+    poem: "Caminar es concederle al mundo el tiempo de mostrarse: la nervadura de una hoja, la piedra tibia, el agua que cambia de voz al encontrar una raíz. Cada pausa abre un paisaje que la prisa había cerrado.",
+    author: "Texto de este taller",
+  },
+  {
+    label: "Poema vertical · varias láminas",
+    poem: "Salgo\nsin mapa.\n\nLa senda\nse abre\nentre los pinos.\n\nUna hoja\ncae\nsin ruido.\n\nMe detengo.\n\nEl agua\nlleva\nla tarde.\n\nLa piedra\nguarda\nel sol.\n\nRegreso\ncon menos prisa\ny más cielo.",
+    author: "Versos de este taller",
+  },
 ];
 export const dimensions = {
   square: [1080, 1080],
@@ -470,6 +597,7 @@ export function freshDesign(template: TemplateId = "stars"): Design {
     format: "square",
     ...examples[0],
     title: "",
+    pagination: "auto",
     font: "serif",
     fontSize: 47,
     lineHeight: 1.6,

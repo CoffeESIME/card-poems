@@ -1,7 +1,8 @@
 import { useId, type ReactNode } from "react";
 import { dimensions, type Design } from "./model";
-import { fontFamilies } from "./fonts";
-import { wrapPoem } from "./text";
+import { layoutText, readingInset } from "./layout";
+export { readingInset } from "./layout";
+import { literaryFrames } from "./LiteraryFrames";
 import { landscapeFrames } from "./LandscapeFrames";
 
 export function starPoints(
@@ -88,41 +89,17 @@ function Flower({
     </g>
   );
 }
-export function readingInset(d: Design) {
-  const clearance = {
-    stars: 105,
-    manuscript: 170,
-    infinite: 85,
-    silence: 90,
-    waves: 110,
-    ink: 100,
-    marigold: 150,
-    papel: 140,
-    memory: 118,
-    enso: 162,
-    sand: 110,
-    lotus: 180,
-    herbarium: 165,
-    willow: 170,
-    meadow: 175,
-    river: 155,
-    balance: 170,
-    clouds: 160,
-    alpine: 220,
-    mist: 220,
-    contours: 130,
-  }[d.template];
-  return Math.min(330, Math.max(155, d.margin + clearance) + d.innerMargin);
-}
 export function Composition({
   design: d,
   thumbnail = false,
+  page = 0,
   guides = false,
   onSelectText,
   svgId,
 }: {
   design: Design;
   thumbnail?: boolean;
+  page?: number;
   guides?: boolean;
   onSelectText?: () => void;
   svgId?: string;
@@ -715,44 +692,12 @@ export function Composition({
         </>
       );
   }
-  const landscape = landscapeFrames({ design: d, id, w, h });
+  const landscape =
+    literaryFrames(d, w, h) ?? landscapeFrames({ design: d, id, w, h });
   if (landscape) ({ frame, pattern, ornaments } = landscape);
-  const family = fontFamilies[d.font];
-  const ctx =
-    typeof document !== "undefined"
-      ? document.createElement("canvas").getContext("2d")
-      : null;
-  const hasJP = /[\u3040-\u30ff\u3400-\u9fff]/.test(
-    d.poem + d.title + d.author,
-  );
-  const hasArabic = /[\u0600-\u08ff]/.test(d.poem + d.title + d.author);
-  const contentFamily =
-    d.font === "serif"
-      ? hasJP
-        ? fontFamilies.japanese
-        : hasArabic
-          ? fontFamilies.arabic
-          : family
-      : family;
-  const overhead =
-    (d.title ? d.fontSize * 2 : 0) +
-    (d.author && d.authorPosition !== "hidden" ? 95 : 0);
-  let size = d.fontSize;
-  const measure = (fontSize: number) => {
-    if (ctx)
-      ctx.font = `${d.italic ? "italic" : "normal"} ${d.bold ? 600 : 400} ${fontSize}px "${contentFamily}"`;
-    return (text: string) =>
-      (ctx?.measureText(text).width ?? [...text].length * fontSize * 0.55) +
-      Math.max(0, [...text].length - 1) * d.letterSpacing;
-  };
-  let lines = wrapPoem(d.poem, readWidth, measure(size));
-  while (
-    lines.length * size * d.lineHeight + overhead > readHeight &&
-    size > 10
-  ) {
-    size -= 1;
-    lines = wrapPoem(d.poem, readWidth, measure(size));
-  }
+  const { contentFamily, overhead, size, measure, pages } = layoutText(d);
+  const currentPage = Math.min(Math.max(0, page), pages.length - 1);
+  const lines = pages[currentPage];
   const titleSize = Math.min(size * 1.28, 70),
     authorSize = Math.max(15, size * 0.46);
   const fullHeight = Math.max(1, lines.length) * size * d.lineHeight + overhead;
@@ -1038,6 +983,18 @@ export function Composition({
           ))}
           <rect x={w * 0.41} y={h * 0.41 + 240} width={w * 0.18} height="4" />
         </g>
+      )}
+      {!thumbnail && pages.length > 1 && (
+        <text
+          x={w / 2}
+          y={h - d.margin - 28}
+          textAnchor="middle"
+          fontFamily="serif"
+          fontSize="20"
+          fill={ink}
+        >
+          {currentPage + 1} / {pages.length}
+        </text>
       )}
       {guides && !thumbnail && (
         <g

@@ -1,4 +1,27 @@
 export type Measure = (text: string) => number;
+// Keep wrapped lines intact, including empty lines and deliberate verse breaks.
+// Prefer a stanza or sentence boundary in the latter half of a page.
+export function paginateLines(lines: string[], capacity: number): string[][] {
+  const limit = Math.max(1, Math.floor(capacity));
+  const pages: string[][] = [];
+  for (let start = 0; start < lines.length; ) {
+    let end = Math.min(start + limit, lines.length);
+    if (end < lines.length) {
+      for (let i = end; i > start + limit / 2; i--) {
+        if (
+          !lines[i - 1].trim() ||
+          /[.!?…。！？][»”’"']?$/.test(lines[i - 1])
+        ) {
+          end = i;
+          break;
+        }
+      }
+    }
+    pages.push(lines.slice(start, end));
+    start = end;
+  }
+  return pages.length ? pages : [[""]];
+}
 export function wrapPoem(
   poem: string,
   maxWidth: number,
