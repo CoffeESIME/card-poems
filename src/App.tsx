@@ -988,7 +988,7 @@ export default function App() {
                 />
                 <SectionLabel>ESPACIO, TÍTULO Y AUTORÍA</SectionLabel>
                 <Range
-                  label="Margen horizontal adicional"
+                  label="Margen de lectura horizontal"
                   value={design.horizontalSpace}
                   min={-100}
                   max={150}
@@ -996,7 +996,7 @@ export default function App() {
                   onChange={(horizontalSpace) => update({ horizontalSpace })}
                 />
                 <Range
-                  label="Margen vertical adicional"
+                  label="Margen de lectura vertical"
                   value={design.verticalSpace}
                   min={-100}
                   max={150}
@@ -1150,14 +1150,28 @@ export default function App() {
                 unit=" px"
                 onChange={(margin) => update({ margin })}
               />
+              <SectionLabel>MÁRGENES DE LECTURA</SectionLabel>
               <Range
-                label="Margen de lectura"
-                value={design.innerMargin}
-                min={0}
-                max={100}
+                label="Margen de lectura horizontal"
+                value={design.horizontalSpace}
+                min={-100}
+                max={150}
                 unit=" px"
-                onChange={(innerMargin) => update({ innerMargin })}
+                onChange={(horizontalSpace) => update({ horizontalSpace })}
               />
+              <Range
+                label="Margen de lectura vertical"
+                value={design.verticalSpace}
+                min={-100}
+                max={150}
+                unit=" px"
+                onChange={(verticalSpace) => update({ verticalSpace })}
+              />
+              <p className="reading-note">
+                Horizontal ajusta izquierda y derecha; vertical, arriba y abajo.
+                Los valores se suman al margen del diseño: reduce uno para
+                ampliar el área de lectura solo en esa dirección.
+              </p>
               <Range
                 label="Escala del patrón"
                 value={design.patternScale}

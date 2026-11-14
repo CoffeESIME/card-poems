@@ -104,6 +104,24 @@ describe("ornamental library", () => {
   });
 });
 describe("poem and font layout", () => {
+  it("adjusts reading margins independently in every template and format", () => {
+    for (const t of templates) {
+      for (const format of ["square", "story", "portrait"] as const) {
+        const design = { ...freshDesign(t.id), format };
+        const base = layoutText(design);
+        const horizontal = layoutText({ ...design, horizontalSpace: 30 });
+        const vertical = layoutText({ ...design, verticalSpace: 30 });
+        expect(horizontal.readWidth).toBe(base.readWidth - 60);
+        expect(horizontal.readHeight).toBe(base.readHeight);
+        expect(vertical.readHeight).toBe(base.readHeight - 60);
+        expect(vertical.readWidth).toBe(base.readWidth);
+        const expanded = layoutText({ ...design, horizontalSpace: -30 });
+        expect(expanded.readWidth).toBe(base.readWidth + 60);
+        expect(expanded.readHeight).toBe(base.readHeight);
+      }
+    }
+  });
+
   const measure = (text: string) => [...text].length * 10;
   it("preserves stanzas, accents, line breaks and empty lines", () => {
     expect(wrapPoem("Un jardín\r\n\r\nQué luz.\n", 500, measure)).toEqual([
