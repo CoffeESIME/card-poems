@@ -557,6 +557,30 @@ export default function App() {
               </select>
               <ChevronDown size={13} />
             </div>
+            <nav
+              className="page-navigation"
+              aria-label="Láminas de la composición"
+            >
+              <button
+                className="button quiet"
+                disabled={currentPage === 0}
+                onClick={() => setPage(currentPage - 1)}
+                aria-label="Lámina anterior"
+              >
+                ←
+              </button>
+              <span aria-live="polite">
+                Lámina <strong>{currentPage + 1}</strong> de {pageCount}
+              </span>
+              <button
+                className="button quiet"
+                disabled={currentPage === pageCount - 1}
+                onClick={() => setPage(currentPage + 1)}
+                aria-label="Lámina siguiente"
+              >
+                →
+              </button>
+            </nav>
             <div className="canvas-tools">
               <button
                 title="Mostrar guías de márgenes y zona segura"
@@ -576,30 +600,7 @@ export default function App() {
               </button>
             </div>
           </div>
-          <nav
-            className="page-navigation"
-            aria-label="Láminas de la composición"
-          >
-            <button
-              className="button quiet"
-              disabled={currentPage === 0}
-              onClick={() => setPage(currentPage - 1)}
-              aria-label="Lámina anterior"
-            >
-              ←
-            </button>
-            <span aria-live="polite">
-              Lámina <strong>{currentPage + 1}</strong> de {pageCount}
-            </span>
-            <button
-              className="button quiet"
-              disabled={currentPage === pageCount - 1}
-              onClick={() => setPage(currentPage + 1)}
-              aria-label="Lámina siguiente"
-            >
-              →
-            </button>
-          </nav>
+
           <div className={`canvas-stage format-${design.format}`}>
             <div
               className="canvas-paper"
@@ -714,6 +715,48 @@ export default function App() {
                 maxLength={150}
                 onChange={(e) => update({ title: e.target.value })}
               />
+              <div className="heading-size-control">
+                <label htmlFor="titleSize">Tamaño del título</label>
+                <div>
+                  <button
+                    type="button"
+                    aria-label="Reducir tamaño del título"
+                    disabled={design.titleSize <= 24}
+                    onClick={() =>
+                      update({ titleSize: Math.max(24, design.titleSize - 2) })
+                    }
+                  >
+                    −
+                  </button>
+                  <input
+                    id="titleSize"
+                    type="number"
+                    min={24}
+                    max={100}
+                    value={design.titleSize}
+                    onChange={(e) => {
+                      if (e.target.value !== "")
+                        update({
+                          titleSize: Math.max(
+                            24,
+                            Math.min(100, Number(e.target.value)),
+                          ),
+                        });
+                    }}
+                  />
+                  <span>px</span>
+                  <button
+                    type="button"
+                    aria-label="Aumentar tamaño del título"
+                    disabled={design.titleSize >= 100}
+                    onClick={() =>
+                      update({ titleSize: Math.min(100, design.titleSize + 2) })
+                    }
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
               <label className="field-label" htmlFor="poem">
                 Frase, máxima o poema
               </label>
@@ -740,6 +783,52 @@ export default function App() {
                 onChange={(e) => update({ author: e.target.value })}
                 placeholder="Tu nombre o seudónimo"
               />
+              <div className="heading-size-control">
+                <label htmlFor="authorSize">Tamaño de autoría</label>
+                <div>
+                  <button
+                    type="button"
+                    aria-label="Reducir tamaño de autoría"
+                    disabled={design.authorSize <= 18}
+                    onClick={() =>
+                      update({
+                        authorSize: Math.max(18, design.authorSize - 2),
+                      })
+                    }
+                  >
+                    −
+                  </button>
+                  <input
+                    id="authorSize"
+                    type="number"
+                    min={18}
+                    max={70}
+                    value={design.authorSize}
+                    onChange={(e) => {
+                      if (e.target.value !== "")
+                        update({
+                          authorSize: Math.max(
+                            18,
+                            Math.min(70, Number(e.target.value)),
+                          ),
+                        });
+                    }}
+                  />
+                  <span>px</span>
+                  <button
+                    type="button"
+                    aria-label="Aumentar tamaño de autoría"
+                    disabled={design.authorSize >= 70}
+                    onClick={() =>
+                      update({
+                        authorSize: Math.min(70, design.authorSize + 2),
+                      })
+                    }
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
               <label className="field-label" htmlFor="pagination">
                 Distribución del texto
               </label>
@@ -914,14 +1003,7 @@ export default function App() {
                   unit=" px"
                   onChange={(verticalSpace) => update({ verticalSpace })}
                 />
-                <Range
-                  label="Tamaño del título"
-                  value={design.titleSize}
-                  min={24}
-                  max={100}
-                  unit=" px"
-                  onChange={(titleSize) => update({ titleSize })}
-                />
+
                 <Range
                   label="Separación del título"
                   value={design.titleGap}
@@ -930,14 +1012,7 @@ export default function App() {
                   unit=" px"
                   onChange={(titleGap) => update({ titleGap })}
                 />
-                <Range
-                  label="Tamaño de autoría"
-                  value={design.authorSize}
-                  min={18}
-                  max={70}
-                  unit=" px"
-                  onChange={(authorSize) => update({ authorSize })}
-                />
+
                 <Range
                   label="Separación de autoría"
                   value={design.authorGap}

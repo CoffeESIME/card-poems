@@ -2015,3 +2015,64 @@ summary::-webkit-details-marker {
     grid-template-columns: 250px minmax(0, 1fr) 280px;
   }
 }
+
+.studio-toolbar {
+  flex-wrap: wrap;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.studio-toolbar .page-navigation {
+  border: 0;
+  padding: 0;
+  gap: 4px;
+  margin-left: auto;
+}
+.studio-toolbar .page-navigation .button {
+  padding: 4px 8px;
+}
+.studio-toolbar .canvas-tools {
+  flex-shrink: 0;
+}
+.heading-size-control {
+  margin: 8px 0 18px;
+}
+.heading-size-control > label {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+.heading-size-control > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.heading-size-control button {
+  min-width: 36px;
+  min-height: 36px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: inherit;
+  font-size: 19px;
+  cursor: pointer;
+}
+.heading-size-control button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.heading-size-control input {
+  width: 70px;
+  min-width: 0;
+  text-align: center;
+}
+.heading-size-control span {
+  font-size: 12px;
+}
+@media (max-width: 620px) {
+  .studio-toolbar .format-select {
+    flex: 1 1 100%;
+  }
+  .studio-toolbar .page-navigation {
+    margin-left: 0;
+    margin-right: auto;
+  }
+}
