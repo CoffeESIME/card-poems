@@ -3,6 +3,12 @@ import { fontFamilies } from "./fonts";
 import { wrapPoem, paginateLines } from "./text";
 export function readingInset(d: Design) {
   const clearance = {
+    blueflower: 170,
+    homeland: 190,
+    threshold: 180,
+    innernight: 180,
+    waiting: 180,
+    lastvoice: 110,
     stars: 105,
     manuscript: 170,
     infinite: 85,

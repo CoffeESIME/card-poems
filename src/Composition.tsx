@@ -3,6 +3,7 @@ import { dimensions, type Design } from "./model";
 import { layoutText, readingInset } from "./layout";
 export { readingInset } from "./layout";
 import { literaryFrames } from "./LiteraryFrames";
+import { poeticFrames } from "./PoeticFrames";
 import { landscapeFrames } from "./LandscapeFrames";
 
 export function starPoints(
@@ -693,7 +694,9 @@ export function Composition({
       );
   }
   const landscape =
-    literaryFrames(d, w, h) ?? landscapeFrames({ design: d, id, w, h });
+    poeticFrames(d, w, h) ??
+    literaryFrames(d, w, h) ??
+    landscapeFrames({ design: d, id, w, h });
   if (landscape) ({ frame, pattern, ornaments } = landscape);
   const { contentFamily, overhead, size, measure, pages } = layoutText(d);
   const currentPage = Math.min(Math.max(0, page), pages.length - 1);

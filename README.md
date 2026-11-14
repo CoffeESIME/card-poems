@@ -1,6 +1,6 @@
 # Folio · Taller de palabras
 
-Editor local para componer máximas, frases y poemas con 27 marcos vectoriales en nueve colecciones: Francesa, Caminantes, Persa, Japonesa, Mexicana, Zen, Naturaleza, Taoísta y Montaña. React + TypeScript + Vite. Sin cuentas, backend, imágenes remotas ni servicios obligatorios durante el uso.
+Editor local para componer máximas, frases y poemas con 33 marcos vectoriales en doce colecciones: Romanticismo, Misticismo, Espera y vacío, Francesa, Caminantes, Persa, Japonesa, Mexicana, Zen, Naturaleza, Taoísta y Montaña. React + TypeScript + Vite. Sin cuentas, backend, imágenes remotas ni servicios obligatorios durante el uso.
 
 ## Iniciar
 
@@ -53,10 +53,11 @@ Los diseños usan estrellas de 8, 10 y 12 puntas, repeticiones seigaiha, tramas 
 
 ## Estructura
 
-- `src/model.ts`: tipos, 27 plantillas, diez paletas generales, formatos y poemas originales de demostración.
+- `src/model.ts`: tipos, 33 plantillas, diez paletas generales, formatos y poemas originales de demostración.
 - `src/Composition.tsx`: motor SVG, geometría, capas y disposición del texto. Es el mismo componente en vista previa, miniaturas, biblioteca y exportación.
 - `src/LandscapeFrames.tsx`: las doce composiciones nuevas y sus motivos botánicos, paisajes y geometría contemplativa, organizados en las mismas tres capas decorativas.
 - `src/LiteraryFrames.tsx`: seis marcos para máximas francesas y textos de caminantes y naturalistas.
+- `src/PoeticFrames.tsx`: seis composiciones de romanticismo, misticismo y espera y vacío.
 - `src/layout.ts`: medición tipográfica y cálculo común de páginas para vista previa y exportación.
 - `src/zip.ts`: descarga conjunta de láminas con nombres numerados.
 - `src/text.ts`: división de versos con conservación de estrofas y caracteres Unicode.
@@ -66,7 +67,7 @@ Los diseños usan estrellas de 8, 10 y 12 puntas, repeticiones seigaiha, tramas 
 - `src/App.tsx`: interacción del editor y biblioteca local.
 - `src/style.css`: diseño editorial, estados accesibles y adaptación a móvil.
 - `src/engine.test.tsx`: pruebas de geometría, referencias SVG, formatos, Unicode y conservación del poema.
-- `src/qa-gallery.tsx`: entrada de revisión visual; no se incluye en el build de producción. Durante desarrollo, `/.qa/index.html` muestra los 27 marcos en cuadrado y vertical; `/.qa/index.html?landscapes` muestra únicamente los doce paisajes.
+- `src/qa-gallery.tsx`: entrada de revisión visual; no se incluye en el build de producción. Durante desarrollo, `/.qa/index.html` muestra los 33 marcos en cuadrado y vertical; `/.qa/index.html?landscapes` muestra únicamente los doce paisajes.
 - `docs/`: capturas de revisión y notas de validación.
 
 Para incorporar otro marco, añade su identificador y metadatos en `model.ts`, su espacio de lectura en `readingInset` y su composición en `LandscapeFrames.tsx` (o en el motor original, `Composition.tsx`). Cada caso entrega tres capas: `pattern`, `frame` y `ornaments`. El resto del editor y los exportadores lo admiten sin modificaciones. Los motivos usan coordenadas locales y las dimensiones del formato para mantener sus proporciones. Los contadores y la numeración de la galería se calculan desde los metadatos.
@@ -76,3 +77,4 @@ Para incorporar otro marco, añade su identificador y metadatos en `model.ts`, s
 Cormorant Garamond, DM Sans, Noto Serif JP y Noto Naskh Arabic se distribuyen localmente mediante Fontsource, bajo sus licencias SIL Open Font License. Los paquetes originales incluyen sus archivos `LICENSE`; consulta `THIRD_PARTY_NOTICES.md`. Los iconos son de Lucide (ISC). Los marcos son geometría creada para este proyecto; no utilizan imágenes externas.
 
 Las capturas de la versión anterior se realizaron con Chromium integrado. La ampliación de máximas y láminas tiene comprobaciones automatizadas; su revisión visual en el navegador integrado quedó pendiente por un fallo de conexión al servidor local. La representación de fuentes y filtros en lectores SVG distintos puede variar; el PNG conserva el resultado rasterizado del navegador.
+

@@ -15,7 +15,7 @@ import { paginateLines, wrapPoem } from "./text";
 import { supportsText } from "./fonts";
 
 describe("ornamental library", () => {
-  it("renders all 27 designs in every format with resolved SVG references", () => {
+  it("renders all designs in every format with resolved SVG references", () => {
     const distinct = new Set();
     for (const template of templates)
       for (const format of ["square", "story", "portrait"] as const) {
@@ -33,15 +33,17 @@ describe("ornamental library", () => {
         if (format === "square")
           distinct.add(markup.replace(/f_R_[^"\s)]+/g, "ID"));
       }
-    expect(distinct.size).toBe(27);
+    expect(distinct.size).toBe(33);
   });
-  it("exposes nine complete collections with stable unique template IDs", () => {
-    expect(new Set(templates.map((t) => t.id)).size).toBe(27);
-    expect(traditions).toHaveLength(9);
+  it("exposes twelve collections with stable unique template IDs", () => {
+    expect(new Set(templates.map((t) => t.id)).size).toBe(33);
+    expect(traditions).toHaveLength(12);
     for (const tradition of traditions)
       expect(
         templates.filter((t) => t.tradition === tradition.id),
-      ).toHaveLength(3);
+      ).toHaveLength(
+        ["romantic", "mystic", "absence"].includes(tradition.id) ? 2 : 3,
+      );
   });
   it("keeps new ornaments valid at both extremes of their customization controls", () => {
     for (const t of templates)

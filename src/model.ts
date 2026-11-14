@@ -1,4 +1,7 @@
 export type Tradition =
+  | "romantic"
+  | "mystic"
+  | "absence"
   | "persian"
   | "japanese"
   | "mexican"
@@ -9,6 +12,12 @@ export type Tradition =
   | "french"
   | "wanderer";
 export type TemplateId =
+  | "blueflower"
+  | "homeland"
+  | "threshold"
+  | "innernight"
+  | "waiting"
+  | "lastvoice"
   | "stars"
   | "manuscript"
   | "infinite"
@@ -91,6 +100,24 @@ export const traditions: {
   region: string;
   mark: string;
 }[] = [
+  {
+    id: "romantic",
+    label: "Romanticismo",
+    region: "Anhelo, ríos & lejanía",
+    mark: "✾",
+  },
+  {
+    id: "mystic",
+    label: "Misticismo",
+    region: "Noche interior & revelación",
+    mark: "☼",
+  },
+  {
+    id: "absence",
+    label: "Espera y vacío",
+    region: "Silencio, repetición & ausencia",
+    mark: "∴",
+  },
   {
     id: "french",
     label: "Francesa",
@@ -214,6 +241,96 @@ export const palettes: Palette[] = [
   },
 ];
 export const templates: Template[] = [
+  {
+    id: "blueflower",
+    tradition: "romantic",
+    name: "La flor azul",
+    subtitle: "El deseo de lo lejano",
+    description:
+      "Una flor nocturna y un creciente sobre azul profundo. El anhelo romántico convertido en una página abierta a lo imposible.",
+    palette: {
+      name: "Azul nocturno",
+      paper: "#202d46",
+      ornament: "#9ab3ce",
+      detail: "#c5aa73",
+      ink: "#f2ecde",
+    },
+  },
+  {
+    id: "homeland",
+    tradition: "romantic",
+    name: "El río del regreso",
+    subtitle: "Paisaje & nostalgia",
+    description:
+      "Un río entre colinas, un sol distante y un horizonte de cobre. Para el vínculo con la tierra, el exilio y la nostalgia de Hölderlin y Heine.",
+    palette: {
+      name: "Tierra del regreso",
+      paper: "#efe4d0",
+      ornament: "#69715b",
+      detail: "#aa684b",
+      ink: "#403e32",
+    },
+  },
+  {
+    id: "threshold",
+    tradition: "mystic",
+    name: "El umbral invisible",
+    subtitle: "La forma de una revelación",
+    description:
+      "Arcos concéntricos, una pequeña luz y un umbral sin puerta. Un espacio para lo sagrado y lo que apenas puede nombrarse.",
+    palette: {
+      name: "Cal y oro",
+      paper: "#f0eadb",
+      ornament: "#95805a",
+      detail: "#b06b43",
+      ink: "#443c30",
+    },
+  },
+  {
+    id: "innernight",
+    tradition: "mystic",
+    name: "La noche interior",
+    subtitle: "Una luz en lo profundo",
+    description:
+      "Un eclipse rodeado de rayos finos sobre tinta ciruela. La oscuridad como lugar de contemplación y descubrimiento.",
+    palette: {
+      name: "Tinta de vigilia",
+      paper: "#332e38",
+      ornament: "#b9a68c",
+      detail: "#dec7a0",
+      ink: "#f2e8da",
+    },
+  },
+  {
+    id: "waiting",
+    tradition: "absence",
+    name: "Todavía aquí",
+    subtitle: "Un escenario para la espera",
+    description:
+      "Un árbol desnudo, una línea de suelo y una luna pequeña. La espera y la persistencia de una voz en un paisaje casi vacío.",
+    palette: {
+      name: "Ceniza tibia",
+      paper: "#e5e2d9",
+      ornament: "#77786f",
+      detail: "#9d8871",
+      ink: "#363831",
+    },
+  },
+  {
+    id: "lastvoice",
+    tradition: "absence",
+    name: "La última voz",
+    subtitle: "Pausa, repetición, silencio",
+    description:
+      "Filetes interrumpidos y marcas que se desvanecen sobre papel hueso. Una composición austera para fragmentos, dudas y palabras que insisten.",
+    palette: {
+      name: "Papel del silencio",
+      paper: "#eeeae2",
+      ornament: "#696158",
+      detail: "#9e7762",
+      ink: "#36312d",
+    },
+  },
   {
     id: "renaissance",
     tradition: "french",
