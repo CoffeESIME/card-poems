@@ -72,11 +72,17 @@ export function readingInset(d: Design) {
 
 export function layoutText(d: Design) {
   const [w, h] = dimensions[d.format];
-  const inset = readingInset(d);
-  const horizontalInset =
-    d.template === "alpine" || d.template === "mist"
-      ? Math.max(195, inset - 55)
-      : inset;
+  const baseInset = readingInset(d);
+  const inset = Math.max(80, Math.min(420, baseInset + d.verticalSpace));
+  const horizontalInset = Math.max(
+    80,
+    Math.min(
+      420,
+      (d.template === "alpine" || d.template === "mist"
+        ? Math.max(195, baseInset - 55)
+        : baseInset) + d.horizontalSpace,
+    ),
+  );
   const readWidth = w - horizontalInset * 2,
     readHeight = h - inset * 2;
   const family = fontFamilies[d.font];
@@ -88,21 +94,22 @@ export function layoutText(d: Design) {
     d.poem + d.title + d.author,
   );
   const hasArabic = /[\u0600-\u08ff]/.test(d.poem + d.title + d.author);
-  const contentFamily =
-    d.font === "serif"
-      ? hasJP
-        ? fontFamilies.japanese
-        : hasArabic
-          ? fontFamilies.arabic
-          : family
-      : family;
+  const contentFamily = !["japanese", "arabic"].includes(d.font)
+    ? hasJP
+      ? fontFamilies.japanese
+      : hasArabic
+        ? fontFamilies.arabic
+        : family
+    : family;
   const overhead =
-    (d.title ? d.fontSize * 2 : 0) +
-    (d.author && d.authorPosition !== "hidden" ? 95 : 0);
+    (d.title ? d.titleSize + d.titleGap : 0) +
+    (d.author && d.authorPosition !== "hidden"
+      ? d.authorSize + d.authorGap
+      : 0);
   let size = d.fontSize;
-  const measure = (fontSize: number) => {
+  const measure = (fontSize: number, bold = d.bold, italic = d.italic) => {
     if (ctx)
-      ctx.font = `${d.italic ? "italic" : "normal"} ${d.bold ? 600 : 400} ${fontSize}px "${contentFamily}"`;
+      ctx.font = `${italic ? "italic" : "normal"} ${bold ? 600 : 400} ${fontSize}px "${contentFamily}"`;
     return (text: string) =>
       (ctx?.measureText(text).width ?? [...text].length * fontSize * 0.55) +
       Math.max(0, [...text].length - 1) * d.letterSpacing;

@@ -793,6 +793,9 @@ export default function App() {
                   }
                 >
                   <option value="serif">Cormorant Garamond</option>
+                  <option value="baskerville">Libre Baskerville</option>
+                  <option value="lora">Lora</option>
+                  <option value="sans">DM Sans</option>
                   <option value="japanese">Noto Serif JP · 日本語</option>
                   <option value="arabic">Noto Naskh Arabic · فارسی</option>
                 </select>
@@ -894,6 +897,83 @@ export default function App() {
                   unit="%"
                   onChange={(position) => update({ position })}
                 />
+                <SectionLabel>ESPACIO, TÍTULO Y AUTORÍA</SectionLabel>
+                <Range
+                  label="Margen horizontal adicional"
+                  value={design.horizontalSpace}
+                  min={-100}
+                  max={150}
+                  unit=" px"
+                  onChange={(horizontalSpace) => update({ horizontalSpace })}
+                />
+                <Range
+                  label="Margen vertical adicional"
+                  value={design.verticalSpace}
+                  min={-100}
+                  max={150}
+                  unit=" px"
+                  onChange={(verticalSpace) => update({ verticalSpace })}
+                />
+                <Range
+                  label="Tamaño del título"
+                  value={design.titleSize}
+                  min={24}
+                  max={100}
+                  unit=" px"
+                  onChange={(titleSize) => update({ titleSize })}
+                />
+                <Range
+                  label="Separación del título"
+                  value={design.titleGap}
+                  min={8}
+                  max={100}
+                  unit=" px"
+                  onChange={(titleGap) => update({ titleGap })}
+                />
+                <Range
+                  label="Tamaño de autoría"
+                  value={design.authorSize}
+                  min={18}
+                  max={70}
+                  unit=" px"
+                  onChange={(authorSize) => update({ authorSize })}
+                />
+                <Range
+                  label="Separación de autoría"
+                  value={design.authorGap}
+                  min={8}
+                  max={100}
+                  unit=" px"
+                  onChange={(authorGap) => update({ authorGap })}
+                />
+                <button
+                  className="button quiet"
+                  aria-pressed={design.titleBold}
+                  onClick={() => update({ titleBold: !design.titleBold })}
+                >
+                  Título en negrita
+                </button>
+                <button
+                  className="button quiet"
+                  aria-pressed={design.titleItalic}
+                  onClick={() => update({ titleItalic: !design.titleItalic })}
+                >
+                  Título en cursiva
+                </button>
+                <button
+                  className="button quiet"
+                  aria-pressed={design.authorBold}
+                  onClick={() => update({ authorBold: !design.authorBold })}
+                >
+                  Autoría en negrita
+                </button>
+                <button
+                  className="button quiet"
+                  aria-pressed={design.authorItalic}
+                  onClick={() => update({ authorItalic: !design.authorItalic })}
+                >
+                  Autoría en cursiva
+                </button>
                 <details className="advanced">
                   <summary>
                     Más ajustes de texto <ChevronDown size={13} />

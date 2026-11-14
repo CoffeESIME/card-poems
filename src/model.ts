@@ -71,7 +71,18 @@ export type Design = {
   poem: string;
   title: string;
   author: string;
-  font: "serif" | "japanese" | "arabic";
+  font: "serif" | "japanese" | "arabic" | "sans" | "baskerville" | "lora";
+  horizontalSpace: number;
+  verticalSpace: number;
+  titleSize: number;
+  authorSize: number;
+  titleGap: number;
+  authorGap: number;
+  titleBold: boolean;
+  titleItalic: boolean;
+  authorBold: boolean;
+  authorItalic: boolean;
+
   fontSize: number;
   lineHeight: number;
   letterSpacing: number;
@@ -838,6 +849,16 @@ export function freshDesign(template: TemplateId = "stars"): Design {
     pagination: "auto",
     font: "serif",
     fontSize: 47,
+    horizontalSpace: 0,
+    verticalSpace: 0,
+    titleSize: 60,
+    authorSize: 30,
+    titleGap: 30,
+    authorGap: 44,
+    titleBold: true,
+    titleItalic: false,
+    authorBold: false,
+    authorItalic: false,
     lineHeight: 1.6,
     letterSpacing: 0,
     align: "center",

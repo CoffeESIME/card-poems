@@ -1,12 +1,46 @@
+import baskerville400 from "@fontsource/libre-baskerville/latin-400.css?inline";
+import baskerville400Italic from "@fontsource/libre-baskerville/latin-400-italic.css?inline";
+import baskerville700 from "@fontsource/libre-baskerville/latin-700.css?inline";
+import baskerville700Italic from "@fontsource/libre-baskerville/latin-700-italic.css?inline";
+import lora400 from "@fontsource/lora/latin-400.css?inline";
+import lora400Italic from "@fontsource/lora/latin-400-italic.css?inline";
+import lora600 from "@fontsource/lora/latin-600.css?inline";
+import lora600Italic from "@fontsource/lora/latin-600-italic.css?inline";
+import dm400 from "@fontsource/dm-sans/latin-400.css?inline";
+import dm400Italic from "@fontsource/dm-sans/latin-400-italic.css?inline";
+import dm600 from "@fontsource/dm-sans/latin-600.css?inline";
+import dm600Italic from "@fontsource/dm-sans/latin-600-italic.css?inline";
 import serif from "@fontsource/cormorant-garamond/latin-400.css?inline";
 import italic from "@fontsource/cormorant-garamond/latin-400-italic.css?inline";
 import bold from "@fontsource/cormorant-garamond/latin-600.css?inline";
 import sans from "@fontsource/dm-sans/latin-400.css?inline";
 import japanese from "@fontsource/noto-serif-jp/400.css?inline";
 import arabic from "@fontsource/noto-naskh-arabic/400.css?inline";
-export const fontCSS = [serif, italic, bold, sans, japanese, arabic].join("\n");
+export const fontCSS = [
+  serif,
+  italic,
+  bold,
+  sans,
+  japanese,
+  arabic,
+  baskerville400,
+  baskerville400Italic,
+  baskerville700,
+  baskerville700Italic,
+  lora400,
+  lora400Italic,
+  lora600,
+  lora600Italic,
+  dm400,
+  dm400Italic,
+  dm600,
+  dm600Italic,
+].join("\n");
 export const fontFamilies = {
   serif: "Cormorant Garamond",
+  sans: "DM Sans",
+  baskerville: "Libre Baskerville",
+  lora: "Lora",
   japanese: "Noto Serif JP",
   arabic: "Noto Naskh Arabic",
 };

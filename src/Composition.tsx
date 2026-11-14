@@ -1,6 +1,6 @@
 import { useId, type ReactNode } from "react";
 import { dimensions, type Design } from "./model";
-import { layoutText, readingInset } from "./layout";
+import { layoutText } from "./layout";
 export { readingInset } from "./layout";
 import { literaryFrames } from "./LiteraryFrames";
 import { poeticFrames } from "./PoeticFrames";
@@ -114,13 +114,8 @@ export function Composition({
   const m = d.margin,
     sw = 1.7 * d.thickness,
     unit = (100 * d.patternScale) / d.density;
-  const inset = readingInset(d),
-    horizontalInset =
-      d.template === "alpine" || d.template === "mist"
-        ? Math.max(195, inset - 55)
-        : inset,
-    readWidth = w - horizontalInset * 2,
-    readHeight = h - inset * 2;
+  const textLayout = layoutText(d);
+  const { inset, horizontalInset, readWidth, readHeight } = textLayout;
   const corners = [
     [m + 51, m + 51, 0],
     [w - m - 51, m + 51, 90],
@@ -702,11 +697,11 @@ export function Composition({
     literaryFrames(d, w, h) ??
     landscapeFrames({ design: d, id, w, h });
   if (landscape) ({ frame, pattern, ornaments } = landscape);
-  const { contentFamily, overhead, size, measure, pages } = layoutText(d);
+  const { contentFamily, overhead, size, measure, pages } = textLayout;
   const currentPage = Math.min(Math.max(0, page), pages.length - 1);
   const lines = pages[currentPage];
-  const titleSize = Math.min(size * 1.28, 70),
-    authorSize = Math.max(15, size * 0.46);
+  const titleSize = d.titleSize,
+    authorSize = d.authorSize;
   const fullHeight = Math.max(1, lines.length) * size * d.lineHeight + overhead;
   const centerY = inset + (readHeight * d.position) / 100;
   const start = Math.max(
@@ -725,9 +720,13 @@ export function Composition({
     d.direction === "rtl" ||
     (d.direction === "auto" &&
       /^[^A-Za-z\u3040-\u9fff]*[\u0590-\u08ff]/.test(d.poem));
-  const textY = start + (d.title ? size * 2 : 0) + size;
-  const titleWidth = measure(titleSize)(d.title),
-    authorWidth = measure(authorSize)(`— ${d.author}`);
+  const textY = start + (d.title ? d.titleSize + d.titleGap : 0) + size;
+  const titleWidth = measure(titleSize, d.titleBold, d.titleItalic)(d.title),
+    authorWidth = measure(
+      authorSize,
+      d.authorBold,
+      d.authorItalic,
+    )(`— ${d.author}`);
   const fitTitleSize = Math.min(
     titleSize,
     (titleSize * readWidth) / Math.max(1, titleWidth),
@@ -943,7 +942,8 @@ export function Composition({
               x={x}
               y={start + titleSize}
               fontSize={fitTitleSize}
-              fontWeight="600"
+              fontWeight={d.titleBold ? 600 : 400}
+              fontStyle={d.titleItalic ? "italic" : "normal"}
             >
               {d.title}
             </text>
@@ -966,10 +966,14 @@ export function Composition({
               y={
                 d.authorPosition === "bottom"
                   ? h - inset
-                  : textY + (lines.length - 1) * size * d.lineHeight + 76
+                  : textY +
+                    (lines.length - 1) * size * d.lineHeight +
+                    d.authorGap +
+                    d.authorSize
               }
               fontSize={fitAuthorSize}
-              opacity=".72"
+              fontWeight={d.authorBold ? 600 : 400}
+              fontStyle={d.authorItalic ? "italic" : "normal"}
             >
               — {d.author}
             </text>

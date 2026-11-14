@@ -13,3 +13,5 @@ El proyecto utiliza paquetes de código abierto. Se conservan sus licencias orig
 | Vite               | MIT                       | `node_modules/vite/LICENSE.md`                                 |
 
 Se incluyen copias de las licencias de fuentes e iconos en `public/licenses/`, que también se copian a la compilación distribuible.
+
+Libre Baskerville y Lora: SIL Open Font License, distribuidas mediante Fontsource. Licencias en public/licenses/Libre-Baskerville.txt y public/licenses/Lora.txt.
