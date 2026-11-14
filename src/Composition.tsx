@@ -4,6 +4,7 @@ import { layoutText, readingInset } from "./layout";
 export { readingInset } from "./layout";
 import { literaryFrames } from "./LiteraryFrames";
 import { poeticFrames } from "./PoeticFrames";
+import { variantFrames } from "./VariantFrames";
 import { landscapeFrames } from "./LandscapeFrames";
 
 export function starPoints(
@@ -694,6 +695,7 @@ export function Composition({
       );
   }
   const landscape =
+    variantFrames(d, w, h) ??
     poeticFrames(d, w, h) ??
     literaryFrames(d, w, h) ??
     landscapeFrames({ design: d, id, w, h });

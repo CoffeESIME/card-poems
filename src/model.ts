@@ -1,3 +1,5 @@
+import { variantTemplates, type VariantId } from "./variants";
+
 export type Tradition =
   | "romantic"
   | "mystic"
@@ -12,6 +14,7 @@ export type Tradition =
   | "french"
   | "wanderer";
 export type TemplateId =
+  | VariantId
   | "blueflower"
   | "homeland"
   | "threshold"
@@ -241,6 +244,7 @@ export const palettes: Palette[] = [
   },
 ];
 export const templates: Template[] = [
+  ...variantTemplates,
   {
     id: "blueflower",
     tradition: "romantic",
