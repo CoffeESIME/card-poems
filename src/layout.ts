@@ -3,6 +3,12 @@ import { fontFamilies } from "./fonts";
 import { wrapPoem, paginateLines } from "./text";
 export function readingInset(d: Design) {
   const clearance = {
+    epitaph: 190,
+    obituary: 165,
+    bureaucracy: 170,
+    classified: 165,
+    littlefarce: 195,
+    falseglory: 190,
     moonwindow: 190,
     ruins: 190,
     well: 190,

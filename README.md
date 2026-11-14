@@ -1,6 +1,6 @@
 # Folio · Taller de palabras
 
-Editor local para componer máximas, frases y poemas con 57 marcos vectoriales en doce colecciones: Romanticismo, Misticismo, Espera y vacío, Francesa, Caminantes, Persa, Japonesa, Mexicana, Zen, Naturaleza, Taoísta y Montaña. React + TypeScript + Vite. Sin cuentas, backend, imágenes remotas ni servicios obligatorios durante el uso.
+Editor local para componer máximas, frases y poemas con 63 marcos vectoriales en trece colecciones: Ironía y sátira, Romanticismo, Misticismo, Espera y vacío, Francesa, Caminantes, Persa, Japonesa, Mexicana, Zen, Naturaleza, Taoísta y Montaña. React + TypeScript + Vite. Sin cuentas, backend, imágenes remotas ni servicios obligatorios durante el uso.
 
 ## Iniciar
 
@@ -53,10 +53,11 @@ Los diseños usan estrellas de 8, 10 y 12 puntas, repeticiones seigaiha, tramas 
 
 ## Estructura
 
-- `src/model.ts`: tipos, 57 plantillas, diez paletas generales, formatos y poemas originales de demostración.
+- `src/model.ts`: tipos, 63 plantillas, diez paletas generales, formatos y poemas originales de demostración.
 - `src/Composition.tsx`: motor SVG, geometría, capas y disposición del texto. Es el mismo componente en vista previa, miniaturas, biblioteca y exportación.
 - `src/LandscapeFrames.tsx`: las doce composiciones nuevas y sus motivos botánicos, paisajes y geometría contemplativa, organizados en las mismas tres capas decorativas.
 - `src/LiteraryFrames.tsx`: seis marcos para máximas francesas y textos de caminantes y naturalistas.
+- `src/SatiricalFrames.tsx`: seis marcos para epitafios, humor negro, sátira burocrática y pequeñas farsas.
 - `src/PoeticFrames.tsx`: seis composiciones de romanticismo, misticismo y espera y vacío.
 - `src/variants.ts` y `src/VariantFrames.tsx`: 24 variantes adicionales, dos por colección, con metadatos, paletas y motivos vectoriales propios.
 - `src/layout.ts`: medición tipográfica y cálculo común de páginas para vista previa y exportación.
@@ -68,7 +69,7 @@ Los diseños usan estrellas de 8, 10 y 12 puntas, repeticiones seigaiha, tramas 
 - `src/App.tsx`: interacción del editor y biblioteca local.
 - `src/style.css`: diseño editorial, estados accesibles y adaptación a móvil.
 - `src/engine.test.tsx`: pruebas de geometría, referencias SVG, formatos, Unicode y conservación del poema.
-- `src/qa-gallery.tsx`: entrada de revisión visual; no se incluye en el build de producción. Durante desarrollo, `/.qa/index.html` muestra los 57 marcos en cuadrado y vertical; `/.qa/index.html?landscapes` muestra únicamente los doce paisajes. `/.qa/index.html?variants` muestra las 24 variantes nuevas.
+- `src/qa-gallery.tsx`: entrada de revisión visual; no se incluye en el build de producción. Durante desarrollo, `/.qa/index.html` muestra los 63 marcos en cuadrado y vertical; `/.qa/index.html?landscapes` muestra únicamente los doce paisajes. `/.qa/index.html?variants` muestra las 24 variantes nuevas. `/.qa/index.html?satire` muestra los seis marcos de Ironía y sátira con textos originales del taller.
 - `docs/`: capturas de revisión y notas de validación.
 
 Para incorporar otro marco, añade su identificador y metadatos en `model.ts`, su espacio de lectura en `readingInset` y su composición en `LandscapeFrames.tsx` (o en el motor original, `Composition.tsx`). Cada caso entrega tres capas: `pattern`, `frame` y `ornaments`. El resto del editor y los exportadores lo admiten sin modificaciones. Los motivos usan coordenadas locales y las dimensiones del formato para mantener sus proporciones. Los contadores y la numeración de la galería se calculan desde los metadatos.

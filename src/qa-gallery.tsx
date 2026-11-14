@@ -1,7 +1,7 @@
 // Development-only visual review. This entry point is not included in the production bundle.
 import { createRoot } from "react-dom/client";
 import { Composition } from "./Composition";
-import { freshDesign, templates } from "./model";
+import { freshDesign, templates, satiricalExamples } from "./model";
 import { variantTemplates } from "./variants";
 import { fontCSS } from "./fonts";
 const style = document.createElement("style");
@@ -11,31 +11,51 @@ style.textContent =
 document.head.appendChild(style);
 const landscapesOnly = new URLSearchParams(location.search).has("landscapes");
 const variantsOnly = new URLSearchParams(location.search).has("variants");
-const reviewedTemplates = variantsOnly
-  ? variantTemplates
-  : landscapesOnly
-    ? templates.filter((t) =>
-        ["zen", "nature", "tao", "mountain"].includes(t.tradition),
-      )
-    : templates;
+const satireOnly = new URLSearchParams(location.search).has("satire");
+const reviewedTemplates = satireOnly
+  ? templates.filter((t) => t.tradition === "satire")
+  : variantsOnly
+    ? variantTemplates
+    : landscapesOnly
+      ? templates.filter((t) =>
+          ["zen", "nature", "tao", "mountain"].includes(t.tradition),
+        )
+      : templates;
 document.fonts.load('47px "Cormorant Garamond"').then(() =>
   createRoot(document.getElementById("root")!).render(
     <>
       <h1>
         Folio ·{" "}
-        {variantsOnly
-          ? "24 nuevas variantes"
-          : landscapesOnly
-            ? "Nuevos horizontes"
-            : "Colección Orígenes"}
+        {satireOnly
+          ? "Ironía y sátira"
+          : variantsOnly
+            ? "24 nuevas variantes"
+            : landscapesOnly
+              ? "Nuevos horizontes"
+              : "Colección Orígenes"}
       </h1>
       <main>
         {reviewedTemplates.map((t) => (
           <article key={t.id}>
             <h2>{t.name}</h2>
             <div>
-              <Composition design={freshDesign(t.id)} />
-              <Composition design={{ ...freshDesign(t.id), format: "story" }} />
+              <Composition
+                design={{
+                  ...freshDesign(t.id),
+                  ...(satireOnly
+                    ? satiricalExamples[t.id === "bureaucracy" ? 1 : 0]
+                    : {}),
+                }}
+              />
+              <Composition
+                design={{
+                  ...freshDesign(t.id),
+                  ...(satireOnly
+                    ? satiricalExamples[t.id === "bureaucracy" ? 1 : 0]
+                    : {}),
+                  format: "story",
+                }}
+              />
             </div>
           </article>
         ))}

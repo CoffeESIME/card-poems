@@ -1,6 +1,7 @@
 import { variantTemplates, type VariantId } from "./variants";
 
 export type Tradition =
+  | "satire"
   | "romantic"
   | "mystic"
   | "absence"
@@ -14,6 +15,12 @@ export type Tradition =
   | "french"
   | "wanderer";
 export type TemplateId =
+  | "epitaph"
+  | "obituary"
+  | "bureaucracy"
+  | "classified"
+  | "littlefarce"
+  | "falseglory"
   | VariantId
   | "blueflower"
   | "homeland"
@@ -103,6 +110,12 @@ export const traditions: {
   region: string;
   mark: string;
 }[] = [
+  {
+    id: "satire",
+    label: "Ironía y sátira",
+    region: "Epitafios, humor negro & pequeñas farsas",
+    mark: "※",
+  },
   {
     id: "romantic",
     label: "Romanticismo",
@@ -244,6 +257,96 @@ export const palettes: Palette[] = [
   },
 ];
 export const templates: Template[] = [
+  {
+    id: "epitaph",
+    tradition: "satire",
+    name: "Aquí yace la razón",
+    subtitle: "Epitafio · humor negro",
+    description:
+      "Una lápida de arco bajo, una grieta y una flor vencida. La solemnidad de la piedra deja el remate en manos del texto.",
+    palette: {
+      name: "Piedra de imprenta",
+      paper: "#e6e2d8",
+      ornament: "#69675e",
+      detail: "#998365",
+      ink: "#34352f",
+    },
+  },
+  {
+    id: "obituary",
+    tradition: "satire",
+    name: "Con profundo alivio",
+    subtitle: "Esquela · solemnidad sospechosa",
+    description:
+      "Una orla de luto, un lazo negro y una pequeña viñeta editorial. Para despedidas irónicas y noticias de gravedad dudosa.",
+    palette: {
+      name: "Luto de papel",
+      paper: "#f0ebdf",
+      ornament: "#3e3b37",
+      detail: "#8b7261",
+      ink: "#302e2b",
+    },
+  },
+  {
+    id: "bureaucracy",
+    tradition: "satire",
+    name: "Se archiva lo absurdo",
+    subtitle: "Expediente · sátira burocrática",
+    description:
+      "Una carpeta, un sello sin dictamen y casillas vacías. La apariencia de un trámite impecable para una conclusión disparatada.",
+    palette: {
+      name: "Carpeta y lacre",
+      paper: "#e9dfc7",
+      ornament: "#716e59",
+      detail: "#a05242",
+      ink: "#403e32",
+    },
+  },
+  {
+    id: "classified",
+    tradition: "satire",
+    name: "Se busca sentido",
+    subtitle: "Clasificado · ironía cotidiana",
+    description:
+      "Filetes de periódico, una llamada de atención y un borde recortable. Para anuncios imposibles, aforismos y pequeñas insolencias.",
+    palette: {
+      name: "Última edición",
+      paper: "#eae5d9",
+      ornament: "#4f5551",
+      detail: "#a55e39",
+      ink: "#303b35",
+    },
+  },
+  {
+    id: "littlefarce",
+    tradition: "satire",
+    name: "Una pequeña farsa",
+    subtitle: "Teatro · comedia de lo absurdo",
+    description:
+      "Un telón recogido, dos máscaras diminutas y un escenario vacío. La página se vuelve una escena para el chiste seco.",
+    palette: {
+      name: "Telón de granate",
+      paper: "#eee0d5",
+      ornament: "#85474b",
+      detail: "#ac8550",
+      ink: "#4d3035",
+    },
+  },
+  {
+    id: "falseglory",
+    tradition: "satire",
+    name: "Gloria de poca monta",
+    subtitle: "Homenaje · vanidad & sátira",
+    description:
+      "Una corona torcida y laureles excesivamente ceremoniosos. Un marco de homenaje para méritos más bien discutibles.",
+    palette: {
+      name: "Oro venido a menos",
+      paper: "#eae4d1",
+      ornament: "#8c7c46",
+      detail: "#986047",
+      ink: "#49412c",
+    },
+  },
   ...variantTemplates,
   {
     id: "blueflower",
@@ -705,6 +808,20 @@ export const examples = [
     author: "Versos de este taller",
   },
 ];
+export const satiricalExamples = [
+  {
+    label: "Epitafio irónico · ejemplo del taller",
+    poem: "Aquí descansa quien tenía\nsiempre la última palabra.\nLa piedra no le contesta.",
+    author: "Texto de este taller",
+  },
+  {
+    label: "Sátira burocrática · ejemplo del taller",
+    poem: "Solicitó permiso para existir.\nSe lo concedieron\ncon efecto retroactivo.",
+    author: "Texto de este taller",
+  },
+];
+examples.push(...satiricalExamples);
+
 export const dimensions = {
   square: [1080, 1080],
   story: [1080, 1920],

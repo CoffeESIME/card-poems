@@ -33,16 +33,20 @@ describe("ornamental library", () => {
         if (format === "square")
           distinct.add(markup.replace(/f_R_[^"\s)]+/g, "ID"));
       }
-    expect(distinct.size).toBe(57);
+    expect(distinct.size).toBe(63);
   });
-  it("exposes twelve collections with stable unique template IDs", () => {
-    expect(new Set(templates.map((t) => t.id)).size).toBe(57);
-    expect(traditions).toHaveLength(12);
+  it("exposes thirteen collections with stable unique template IDs", () => {
+    expect(new Set(templates.map((t) => t.id)).size).toBe(63);
+    expect(traditions).toHaveLength(13);
     for (const tradition of traditions)
       expect(
         templates.filter((t) => t.tradition === tradition.id),
       ).toHaveLength(
-        ["romantic", "mystic", "absence"].includes(tradition.id) ? 4 : 5,
+        tradition.id === "satire"
+          ? 6
+          : ["romantic", "mystic", "absence"].includes(tradition.id)
+            ? 4
+            : 5,
       );
   });
   it("keeps new ornaments valid at both extremes of their customization controls", () => {

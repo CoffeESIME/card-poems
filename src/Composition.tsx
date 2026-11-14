@@ -5,6 +5,7 @@ export { readingInset } from "./layout";
 import { literaryFrames } from "./LiteraryFrames";
 import { poeticFrames } from "./PoeticFrames";
 import { variantFrames } from "./VariantFrames";
+import { satiricalFrames } from "./SatiricalFrames";
 import { landscapeFrames } from "./LandscapeFrames";
 
 export function starPoints(
@@ -695,6 +696,7 @@ export function Composition({
       );
   }
   const landscape =
+    satiricalFrames(d, w, h) ??
     variantFrames(d, w, h) ??
     poeticFrames(d, w, h) ??
     literaryFrames(d, w, h) ??
