@@ -42,6 +42,7 @@ import {
 import { layoutText } from "./layout";
 import { zipImages } from "./zip";
 import { compositionBlob, download } from "./export";
+import { createExportNames } from "./exportNames";
 import {
   hydrateDesign,
   keys,
@@ -266,24 +267,18 @@ export default function App() {
       const svgs = Array.from(exportRef.current?.querySelectorAll("svg") ?? []);
       if (svgs.length !== pageCount)
         throw new Error("No se encontró la serie completa.");
-      const name =
-        design.name
-          .trim()
-          .replace(/[^\p{L}\p{N}-]+/gu, "-")
-          .slice(0, 70) || "folio";
-      const extension = format === "jpeg" ? "jpg" : format;
+      const names = createExportNames(design, format);
       const selected = all
         ? svgs.map((svg, i) => ({ svg, i }))
         : [{ svg: svgs[currentPage], i: currentPage }];
       const files = [];
       for (const { svg, i } of selected) {
         files.push({
-          name: `${name}-${width}x${height}${pageCount > 1 ? `-lamina-${String(i + 1).padStart(2, "0")}` : ""}.${extension}`,
+          name: names.image(i, pageCount),
           blob: await compositionBlob(svg, design, format),
         });
       }
-      if (files.length > 1)
-        download(await zipImages(files), `${name}-${format}-laminas.zip`);
+      if (files.length > 1) download(await zipImages(files), names.archive);
       else download(files[0].blob, files[0].name);
       setExportOpen(false);
       notify(
@@ -643,6 +638,19 @@ export default function App() {
                 <Plus size={13} />
               </button>
             </div>
+          </div>
+          <div className="canvas-export" aria-label="Exportar composición">
+            <span>Descargar{pageCount > 1 ? " serie" : " imagen"}</span>
+            {(["png", "jpeg", "svg"] as const).map((format) => (
+              <button
+                key={format}
+                className="button quiet"
+                disabled={busy || textOverflow}
+                onClick={() => exportDesign(format)}
+              >
+                {format === "jpeg" ? "JPG" : format.toUpperCase()}
+              </button>
+            ))}
           </div>
           <div className="template-story">
             <span className="story-mark">

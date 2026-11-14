@@ -1928,3 +1928,90 @@ summary::-webkit-details-marker {
   align-items: center;
   gap: 12px;
 }
+
+/* Keep enlarged artwork in normal flow so its top and left stay reachable. */
+.canvas-stage {
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.canvas-paper {
+  transform: none;
+  transition: none;
+  margin: auto;
+  width: calc(min(100%, 530px) * var(--zoom));
+}
+.canvas-stage.format-story .canvas-paper {
+  width: calc(min(100%, 360px) * var(--zoom));
+}
+.canvas-stage.format-portrait .canvas-paper {
+  width: calc(min(100%, 490px) * var(--zoom));
+}
+.canvas-export {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+  font-size: 0.75rem;
+}
+.canvas-export > span {
+  margin-right: auto;
+}
+.canvas-export .button {
+  min-height: 36px;
+}
+@media (min-width: 961px) {
+  .app-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--paper, #f5f3ea);
+    height: 66px;
+  }
+  .workspace-heading {
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+  .workspace {
+    grid-template-columns: 230px minmax(0, 1fr) 260px;
+    height: calc(100dvh - 160px);
+    min-height: 540px;
+    max-width: none;
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+  .studio {
+    padding: 14px 18px;
+  }
+  .studio .canvas-stage {
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 8px;
+  }
+  .canvas-stage.format-square .canvas-paper {
+    width: calc(min(100cqw - 16px, 100cqh - 20px) * var(--zoom));
+  }
+  .canvas-stage.format-story .canvas-paper {
+    width: calc(min(100cqw - 16px, (100cqh - 20px) * 0.5625) * var(--zoom));
+  }
+  .canvas-stage.format-portrait .canvas-paper {
+    width: calc(min(100cqw - 16px, (100cqh - 20px) * 0.8) * var(--zoom));
+  }
+  .canvas-status {
+    margin: 8px 0;
+    flex-shrink: 0;
+  }
+  .template-story {
+    display: none;
+  }
+  .canvas-hint {
+    margin: 6px 0;
+  }
+}
+@media (min-width: 1550px) {
+  .workspace {
+    grid-template-columns: 250px minmax(0, 1fr) 280px;
+  }
+}

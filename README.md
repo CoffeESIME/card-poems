@@ -28,7 +28,7 @@ npm run preview  # Servir la compilación de producción
 3. Ajusta tipografía, alineación, interlineado, espacio entre letras y posición. La dirección se detecta automáticamente o puede fijarse en los ajustes avanzados.
 4. En **Ornamento**, cambia los cuatro colores, grosor, márgenes, escala, densidad, opacidad, posición y visibilidad de las capas. **Restablecer** recupera los ajustes del marco y conserva el poema.
 5. Selecciona cuadrado 1080 × 1080, historia 1080 × 1920 o retrato 1080 × 1350. Las guías del formato historia incluyen una zona segura orientativa para Reels y TikTok.
-6. **Exportar** descarga PNG, SVG o JPEG. Las guías nunca aparecen en la exportación. El SVG incluye las fuentes necesarias y conserva el texto como texto vectorial editable.
+6. **Exportar** descarga PNG, SVG o JPEG. El nombre del archivo usa el título visible o, si no lo hay, las primeras palabras del contenido; después recurre al nombre de biblioteca. Incluye fecha y hora local, un código aleatorio por exportación y las dimensiones para distinguir descargas repetidas. Las series comparten ese identificador en el ZIP y sus láminas numeradas. Las guías nunca aparecen en la exportación. El SVG incluye las fuentes necesarias y conserva el texto como texto vectorial editable.
 7. **Guardar composición** añade el diseño a **Mis composiciones**, donde puedes nombrarlo, duplicarlo y volver a editarlo. **Guardar marco y paleta** crea un preset personal.
 
 El borrador se guarda automáticamente. La biblioteca y los presets usan `localStorage`, con claves versionadas `folio:*:v1`. Borrar los datos del navegador borra estos diseños. Exporta las imágenes que quieras conservar fuera del navegador. No hay sincronización entre dispositivos.
@@ -65,6 +65,7 @@ Los diseños usan estrellas de 8, 10 y 12 puntas, repeticiones seigaiha, tramas 
 - `src/text.ts`: división de versos con conservación de estrofas y caracteres Unicode.
 - `src/fonts.ts`: fuentes locales y selección de subconjuntos Unicode para incrustación.
 - `src/export.ts`: serialización SVG, fuentes incrustadas y rasterización a resolución nativa.
+- `src/exportNames.ts`: nombres descriptivos y seguros para archivos, con identidad propia por exportación.
 - `src/storage.ts`: persistencia y recuperación del borrador.
 - `src/App.tsx`: interacción del editor y biblioteca local.
 - `src/style.css`: diseño editorial, estados accesibles y adaptación a móvil.
