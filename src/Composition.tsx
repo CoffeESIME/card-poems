@@ -6,6 +6,7 @@ import { literaryFrames } from "./LiteraryFrames";
 import { poeticFrames } from "./PoeticFrames";
 import { variantFrames } from "./VariantFrames";
 import { satiricalFrames } from "./SatiricalFrames";
+import { darkFrames } from "./DarkFrames";
 import { landscapeFrames } from "./LandscapeFrames";
 
 export function starPoints(
@@ -691,13 +692,22 @@ export function Composition({
       );
   }
   const landscape =
+    darkFrames(d, w, h) ??
     satiricalFrames(d, w, h) ??
     variantFrames(d, w, h) ??
     poeticFrames(d, w, h) ??
     literaryFrames(d, w, h) ??
     landscapeFrames({ design: d, id, w, h });
   if (landscape) ({ frame, pattern, ornaments } = landscape);
-  const { contentFamily, overhead, size, measure, pages } = textLayout;
+  const {
+    contentFamily,
+    overhead,
+    size,
+    measure,
+    pages,
+    authorLines,
+    authorLeading,
+  } = textLayout;
   const currentPage = Math.min(Math.max(0, page), pages.length - 1);
   const lines = pages[currentPage];
   const titleSize = d.titleSize,
@@ -721,20 +731,18 @@ export function Composition({
     (d.direction === "auto" &&
       /^[^A-Za-z\u3040-\u9fff]*[\u0590-\u08ff]/.test(d.poem));
   const textY = start + (d.title ? d.titleSize + d.titleGap : 0) + size;
-  const titleWidth = measure(titleSize, d.titleBold, d.titleItalic)(d.title),
-    authorWidth = measure(
-      authorSize,
-      d.authorBold,
-      d.authorItalic,
-    )(`— ${d.author}`);
+  const titleWidth = measure(titleSize, d.titleBold, d.titleItalic)(d.title);
   const fitTitleSize = Math.min(
     titleSize,
     (titleSize * readWidth) / Math.max(1, titleWidth),
   );
-  const fitAuthorSize = Math.min(
-    authorSize,
-    (authorSize * readWidth) / Math.max(1, authorWidth),
-  );
+  const authorY =
+    d.authorPosition === "bottom"
+      ? h - inset - (authorLines.length - 1) * authorLeading
+      : textY +
+        (lines.length - 1) * size * d.lineHeight +
+        d.authorGap +
+        authorSize;
   return (
     <svg
       id={svgId}
@@ -960,22 +968,18 @@ export function Composition({
               </tspan>
             ))}
           </text>
-          {d.author && d.authorPosition !== "hidden" && (
+          {authorLines.length > 0 && (
             <text
-              x={x}
-              y={
-                d.authorPosition === "bottom"
-                  ? h - inset
-                  : textY +
-                    (lines.length - 1) * size * d.lineHeight +
-                    d.authorGap +
-                    d.authorSize
-              }
-              fontSize={fitAuthorSize}
+              data-author="true"
+              fontSize={authorSize}
               fontWeight={d.authorBold ? 600 : 400}
               fontStyle={d.authorItalic ? "italic" : "normal"}
             >
-              — {d.author}
+              {authorLines.map((line, i) => (
+                <tspan key={i} x={x} y={authorY + i * authorLeading}>
+                  {line || "\u00a0"}
+                </tspan>
+              ))}
             </text>
           )}
         </g>

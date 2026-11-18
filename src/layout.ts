@@ -3,6 +3,12 @@ import { fontFamilies } from "./fonts";
 import { wrapPoem, paginateLines } from "./text";
 export function readingInset(d: Design) {
   const clearance = {
+    fleshandthorn: 180,
+    excess: 190,
+    anatomy: 190,
+    lastsun: 200,
+    ashcity: 200,
+    judgment: 190,
     epitaph: 190,
     obituary: 165,
     bureaucracy: 170,
@@ -101,11 +107,6 @@ export function layoutText(d: Design) {
         ? fontFamilies.arabic
         : family
     : family;
-  const overhead =
-    (d.title ? d.titleSize + d.titleGap : 0) +
-    (d.author && d.authorPosition !== "hidden"
-      ? d.authorSize + d.authorGap
-      : 0);
   let size = d.fontSize;
   const measure = (fontSize: number, bold = d.bold, italic = d.italic) => {
     if (ctx)
@@ -114,6 +115,23 @@ export function layoutText(d: Design) {
       (ctx?.measureText(text).width ?? [...text].length * fontSize * 0.55) +
       Math.max(0, [...text].length - 1) * d.letterSpacing;
   };
+
+  const authorText = d.author.trim();
+  const authorLines =
+    authorText && d.authorPosition !== "hidden"
+      ? wrapPoem(
+          /^[—–-]/u.test(authorText) ? authorText : `— ${authorText}`,
+          readWidth,
+          measure(d.authorSize, d.authorBold, d.authorItalic),
+        )
+      : [];
+  const authorLeading = d.authorSize * 1.35;
+  const authorHeight = authorLines.length
+    ? d.authorSize + (authorLines.length - 1) * authorLeading
+    : 0;
+  const overhead =
+    (d.title ? d.titleSize + d.titleGap : 0) +
+    (authorLines.length ? authorHeight + d.authorGap : 0);
 
   let lines = wrapPoem(d.poem, readWidth, measure(size));
   if (d.pagination === "single") {
@@ -138,6 +156,9 @@ export function layoutText(d: Design) {
     readHeight,
     contentFamily,
     overhead,
+    authorLines,
+    authorLeading,
+    authorHeight,
     size,
     measure,
     pages,

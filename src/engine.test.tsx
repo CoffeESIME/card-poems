@@ -33,16 +33,16 @@ describe("ornamental library", () => {
         if (format === "square")
           distinct.add(markup.replace(/f_R_[^"\s)]+/g, "ID"));
       }
-    expect(distinct.size).toBe(63);
+    expect(distinct.size).toBe(69);
   });
-  it("exposes thirteen collections with stable unique template IDs", () => {
-    expect(new Set(templates.map((t) => t.id)).size).toBe(63);
-    expect(traditions).toHaveLength(13);
+  it("exposes fourteen collections with stable unique template IDs", () => {
+    expect(new Set(templates.map((t) => t.id)).size).toBe(69);
+    expect(traditions).toHaveLength(14);
     for (const tradition of traditions)
       expect(
         templates.filter((t) => t.tradition === tradition.id),
       ).toHaveLength(
-        tradition.id === "satire"
+        ["satire", "dark"].includes(tradition.id)
           ? 6
           : ["romantic", "mystic", "absence"].includes(tradition.id)
             ? 4
@@ -152,6 +152,59 @@ describe("poem and font layout", () => {
 });
 
 describe("multi-plate text", () => {
+  it("wraps long authors at their chosen size and preserves explicit breaks", () => {
+    const d = {
+      ...freshDesign(),
+      author: "–Jaime Sabines\nDiario Semanario y Poemas en Prosa (1961)",
+      authorSize: 40,
+    };
+    const layout = layoutText(d);
+    expect(layout.authorLines[0]).toBe("–Jaime Sabines");
+    expect(layout.authorLines.length).toBeGreaterThan(2);
+    expect(layout.authorLines.join(" ")).toContain("(1961)");
+    const markup = renderToStaticMarkup(<Composition design={d} />);
+    expect(markup).toContain('data-author="true" font-size="40"');
+    expect(markup).not.toContain("— –");
+    expect(layoutText({ ...d, authorPosition: "hidden" }).authorLines).toEqual(
+      [],
+    );
+  });
+  it("reserves multiline author height on every page and anchors its last line at the foot", () => {
+    for (const format of ["square", "story", "portrait"] as const) {
+      for (const authorPosition of ["below", "bottom"] as const) {
+        const d = {
+          ...freshDesign(),
+          format,
+          authorPosition,
+          author: "Jaime Sabines\nDiario Semanario\ny Poemas en Prosa (1961)",
+          authorSize: 40,
+          poem: "Un verso.\n".repeat(45),
+        };
+        const layout = layoutText(d);
+        expect(layout.authorHeight).toBe(
+          40 + (layout.authorLines.length - 1) * 54,
+        );
+        for (let page = 0; page < layout.pages.length; page++) {
+          const markup = renderToStaticMarkup(
+            <Composition design={d} page={page} />,
+          );
+          expect(markup).toContain('data-overflow="false"');
+          const block = markup.match(
+            /<text data-author="true"[^>]*>(.*?)<\/text>/,
+          )![1];
+          const ys = [...block.matchAll(/ y="([^"]+)"/g)].map((m) =>
+            Number(m[1]),
+          );
+          expect(ys.at(-1)).toBeLessThanOrEqual(
+            dimensions[format][1] - layout.inset,
+          );
+          if (authorPosition === "bottom")
+            expect(ys.at(-1)).toBe(dimensions[format][1] - layout.inset);
+        }
+      }
+    }
+  });
+
   it("preserves every wrapped line and stanza across boundaries", () => {
     const lines = [
       "Une pensée.",

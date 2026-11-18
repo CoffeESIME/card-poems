@@ -1,6 +1,8 @@
 import { variantTemplates, type VariantId } from "./variants";
+import { darkTemplates, type DarkTemplateId } from "./darkTemplates";
 
 export type Tradition =
+  | "dark"
   | "satire"
   | "romantic"
   | "mystic"
@@ -15,6 +17,7 @@ export type Tradition =
   | "french"
   | "wanderer";
 export type TemplateId =
+  | DarkTemplateId
   | "epitaph"
   | "obituary"
   | "bureaucracy"
@@ -121,6 +124,12 @@ export const traditions: {
   region: string;
   mark: string;
 }[] = [
+  {
+    id: "dark",
+    label: "Visceral y apocalíptica",
+    region: "Cuerpo, decadencia & fin del mundo",
+    mark: "◐",
+  },
   {
     id: "satire",
     label: "Ironía y sátira",
@@ -268,6 +277,7 @@ export const palettes: Palette[] = [
   },
 ];
 export const templates: Template[] = [
+  ...darkTemplates,
   {
     id: "epitaph",
     tradition: "satire",

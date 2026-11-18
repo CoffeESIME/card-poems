@@ -775,14 +775,21 @@ export default function App() {
               <label className="field-label" htmlFor="author">
                 Autoría
               </label>
-              <input
+              <textarea
+                rows={3}
                 id="author"
                 dir="auto"
                 value={design.author}
                 maxLength={150}
                 onChange={(e) => update({ author: e.target.value })}
-                placeholder="Tu nombre o seudónimo"
+                placeholder={
+                  "Jaime Sabines\nDiario Semanario y Poemas en Prosa (1961)"
+                }
               />
+              <p className="reading-note">
+                Usa Enter para separar autor, obra y año. Las líneas largas se
+                ajustan sin reducir la letra.
+              </p>
               <div className="heading-size-control">
                 <label htmlFor="authorSize">Tamaño de autoría</label>
                 <div>
