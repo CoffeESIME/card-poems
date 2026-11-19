@@ -3,6 +3,13 @@ import { fontFamilies } from "./fonts";
 import { wrapPoem, paginateLines } from "./text";
 export function readingInset(d: Design) {
   const clearance = {
+    broadside: 165,
+    assembly: 160,
+    petition: 150,
+    shift: 160,
+    shuttle: 150,
+    hammock: 160,
+    longtable: 155,
     fleshandthorn: 180,
     excess: 190,
     anatomy: 190,

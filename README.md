@@ -1,6 +1,6 @@
 # Folio · Taller de palabras
 
-Editor local para componer máximas, frases y poemas con 69 marcos vectoriales en catorce colecciones: Visceral y apocalíptica, Ironía y sátira, Romanticismo, Misticismo, Espera y vacío, Francesa, Caminantes, Persa, Japonesa, Mexicana, Zen, Naturaleza, Taoísta y Montaña. React + TypeScript + Vite. Sin cuentas, backend, imágenes remotas ni servicios obligatorios durante el uso.
+Editor local para componer máximas, frases y poemas con 76 marcos vectoriales en diecisiete colecciones, entre ellas Revuelta y derechos, Obreros y máquinas y Descanso y gozo. React + TypeScript + Vite. Sin cuentas, backend, imágenes remotas ni servicios obligatorios durante el uso.
 
 ## Iniciar
 
@@ -23,7 +23,7 @@ npm run preview  # Servir la compilación de producción
 
 ## Uso
 
-1. Elige un estilo o tradición y uno de sus tres marcos. El poema se conserva al cambiar de marco.
+1. Elige un estilo o tradición y uno de sus marcos. El poema se conserva al cambiar de marco.
 2. Escribe el poema, título y autoría. Se conservan versos y estrofas; los versos demasiado anchos se dividen según el ancho real de la fuente.
 3. Ajusta tipografía, alineación, interlineado, espacio entre letras y posición. La dirección se detecta automáticamente o puede fijarse en los ajustes avanzados.
 4. En **Ornamento**, cambia los cuatro colores, grosor, márgenes, escala, densidad, opacidad, posición y visibilidad de las capas. **Restablecer** recupera los ajustes del marco y conserva el poema.
@@ -39,6 +39,9 @@ Por defecto, los textos largos se reparten automáticamente en dos o más lámin
 
 | Tradición  | Marcos                                                          |
 | ---------- | --------------------------------------------------------------- |
+| Revuelta y derechos | Que circule la palabra · La plaza toma la voz · Al pie de la demanda |
+| Obreros y máquinas | El relevo · Canta la lanzadera |
+| Descanso y gozo | La tarde sin silbato · Que alcance la mesa |
 | Francesa | Ensayo renacentista · El salón de las máximas · El gabinete ilustrado |
 | Caminantes | Cuaderno del caminante · Notas del naturalista · La voz del bosque |
 | Persa      | Jardín de estrellas · Manuscrito persa · Geometría infinita     |
@@ -53,7 +56,7 @@ Los diseños usan estrellas de 8, 10 y 12 puntas, repeticiones seigaiha, tramas 
 
 ## Estructura
 
-- `src/model.ts`: tipos, 69 plantillas, diez paletas generales, formatos y poemas originales de demostración.
+- `src/model.ts`: tipos, catálogo de plantillas, diez paletas generales, formatos y poemas originales de demostración.
 - `src/Composition.tsx`: motor SVG, geometría, capas y disposición del texto. Es el mismo componente en vista previa, miniaturas, biblioteca y exportación.
 - `src/LandscapeFrames.tsx`: las doce composiciones nuevas y sus motivos botánicos, paisajes y geometría contemplativa, organizados en las mismas tres capas decorativas.
 - `src/LiteraryFrames.tsx`: seis marcos para máximas francesas y textos de caminantes y naturalistas.
@@ -71,7 +74,7 @@ Los diseños usan estrellas de 8, 10 y 12 puntas, repeticiones seigaiha, tramas 
 - `src/App.tsx`: interacción del editor y biblioteca local.
 - `src/style.css`: diseño editorial, estados accesibles y adaptación a móvil.
 - `src/engine.test.tsx`: pruebas de geometría, referencias SVG, formatos, Unicode y conservación del poema.
-- `src/qa-gallery.tsx`: entrada de revisión visual; no se incluye en el build de producción. Durante desarrollo, `/.qa/index.html` muestra los 69 marcos en cuadrado y vertical; `/.qa/index.html?landscapes` muestra únicamente los doce paisajes. `/.qa/index.html?variants` muestra las 24 variantes nuevas. `/.qa/index.html?satire` muestra los seis marcos de Ironía y sátira con textos originales del taller.
+- `src/qa-gallery.tsx`: entrada de revisión visual; no se incluye en el build de producción. Durante desarrollo, `/.qa/index.html` muestra todos los marcos en cuadrado y vertical; `/.qa/index.html?landscapes` muestra únicamente los doce paisajes. `/.qa/index.html?variants` muestra las 24 variantes nuevas. `/.qa/index.html?satire` muestra los seis marcos de Ironía y sátira con textos originales del taller.
 - `docs/`: capturas de revisión y notas de validación.
 
 Para incorporar otro marco, añade su identificador y metadatos en `model.ts`, su espacio de lectura en `readingInset` y su composición en `LandscapeFrames.tsx` (o en el motor original, `Composition.tsx`). Cada caso entrega tres capas: `pattern`, `frame` y `ornaments`. El resto del editor y los exportadores lo admiten sin modificaciones. Los motivos usan coordenadas locales y las dimensiones del formato para mantener sus proporciones. Los contadores y la numeración de la galería se calculan desde los metadatos.

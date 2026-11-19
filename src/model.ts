@@ -1,7 +1,14 @@
 import { variantTemplates, type VariantId } from "./variants";
 import { darkTemplates, type DarkTemplateId } from "./darkTemplates";
+import {
+  collectiveTemplates,
+  type CollectiveTemplateId,
+} from "./collectiveTemplates";
 
 export type Tradition =
+  | "revolt"
+  | "labor"
+  | "leisure"
   | "dark"
   | "satire"
   | "romantic"
@@ -17,6 +24,7 @@ export type Tradition =
   | "french"
   | "wanderer";
 export type TemplateId =
+  | CollectiveTemplateId
   | DarkTemplateId
   | "epitaph"
   | "obituary"
@@ -124,6 +132,24 @@ export const traditions: {
   region: string;
   mark: string;
 }[] = [
+  {
+    id: "revolt",
+    label: "Revuelta y derechos",
+    region: "Revolución, asamblea y conquistas colectivas",
+    mark: "⚑",
+  },
+  {
+    id: "labor",
+    label: "Obreros y máquinas",
+    region: "Turnos, oficios y ritmos de fábrica",
+    mark: "⚙",
+  },
+  {
+    id: "leisure",
+    label: "Descanso y gozo",
+    region: "Tiempo propio, siesta y fiesta",
+    mark: "☀",
+  },
   {
     id: "dark",
     label: "Visceral y apocalíptica",
@@ -786,6 +812,7 @@ export const templates: Template[] = [
       ink: "#4c503d",
     },
   },
+  ...collectiveTemplates,
 ];
 export const examples = [
   {
@@ -842,6 +869,23 @@ export const satiricalExamples = [
   },
 ];
 examples.push(...satiricalExamples);
+examples.push(
+  {
+    label: "La plaza · coro",
+    poem: "Trae tu silla a la plaza.\nDonde ayer cabía una orden\nhoy caben cien voces\ny queda sitio para la tuya.",
+    author: "Versos de este taller",
+  },
+  {
+    label: "El turno · poema obrero",
+    poem: "Mi madre conocía\npor el oído un hilo roto.\nEl telar se queda sordo\ncuando ella vuelve a casa.",
+    author: "Versos de este taller",
+  },
+  {
+    label: "Sobremesa · cuatro versos",
+    poem: "Parte la última tajada.\nLa tarde es larga todavía.\nQué gusto oír las pepitas\ncaer en el plato vacío.",
+    author: "Versos de este taller",
+  },
+);
 
 export const dimensions = {
   square: [1080, 1080],

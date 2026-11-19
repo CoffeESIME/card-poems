@@ -7,6 +7,7 @@ import { poeticFrames } from "./PoeticFrames";
 import { variantFrames } from "./VariantFrames";
 import { satiricalFrames } from "./SatiricalFrames";
 import { darkFrames } from "./DarkFrames";
+import { collectiveFrames } from "./CollectiveFrames";
 import { landscapeFrames } from "./LandscapeFrames";
 
 export function starPoints(
@@ -692,6 +693,7 @@ export function Composition({
       );
   }
   const landscape =
+    collectiveFrames(d, w, h) ??
     darkFrames(d, w, h) ??
     satiricalFrames(d, w, h) ??
     variantFrames(d, w, h) ??
