@@ -4,6 +4,10 @@ import { wrapPoem, paginateLines } from "./text";
 export function readingInset(d: Design) {
   const clearance = {
     broadside: 165,
+    cancionero: 130,
+    mojonera: 150,
+    petrograd: 150,
+    doleances: 145,
     assembly: 160,
     petition: 150,
     shift: 160,

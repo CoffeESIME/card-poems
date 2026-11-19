@@ -1,6 +1,6 @@
 # Folio · Taller de palabras
 
-Editor local para componer máximas, frases y poemas con 76 marcos vectoriales en diecisiete colecciones, entre ellas Revuelta y derechos, Obreros y máquinas y Descanso y gozo. React + TypeScript + Vite. Sin cuentas, backend, imágenes remotas ni servicios obligatorios durante el uso.
+Editor local para componer máximas, frases y poemas con 80 marcos vectoriales en diecisiete colecciones, entre ellas Revuelta y derechos, Obreros y máquinas y Descanso y gozo. React + TypeScript + Vite. Sin cuentas, backend, imágenes remotas ni servicios obligatorios durante el uso.
 
 ## Iniciar
 
@@ -39,7 +39,7 @@ Por defecto, los textos largos se reparten automáticamente en dos o más lámin
 
 | Tradición  | Marcos                                                          |
 | ---------- | --------------------------------------------------------------- |
-| Revuelta y derechos | Que circule la palabra · La plaza toma la voz · Al pie de la demanda |
+| Revuelta y derechos | Que circule la palabra · La plaza toma la voz · Al pie de la demanda · Hoja de corrido · Donde estaba la mojonera · La fila del pan · Cuaderno de agravios |
 | Obreros y máquinas | El relevo · Canta la lanzadera |
 | Descanso y gozo | La tarde sin silbato · Que alcance la mesa |
 | Francesa | Ensayo renacentista · El salón de las máximas · El gabinete ilustrado |

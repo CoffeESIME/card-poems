@@ -135,7 +135,7 @@ export const traditions: {
   {
     id: "revolt",
     label: "Revuelta y derechos",
-    region: "Revolución, asamblea y conquistas colectivas",
+    region: "México, Rusia y Francia · asambleas y derechos",
     mark: "⚑",
   },
   {
@@ -814,7 +814,12 @@ export const templates: Template[] = [
   },
   ...collectiveTemplates,
 ];
-export const examples = [
+export const examples: {
+  label: string;
+  poem: string;
+  author: string;
+  title?: string;
+}[] = [
   {
     label: "Un jardín · cuatro versos",
     poem: "La noche guarda un jardín\nque no conoce el invierno.\nCada estrella es una flor;\ncada silencio, un comienzo.",
@@ -870,6 +875,17 @@ export const satiricalExamples = [
 ];
 examples.push(...satiricalExamples);
 examples.push(
+  {
+    label: "Carabina 30-30 · corrido mexicano",
+    title: "Carabina 30-30",
+    author: "",
+    poem: [
+      "Con mi treinta treinta me voy a alistar\ny engrosar las filas de la rebelión,\npara conquistar, conquistar libertad,\na los habitantes de nuestra nación.",
+      "Con mi treinta treinta me voy a pelear\ny a ofrecer la vida en la revolución,\nsi mi sangre piden, mi sangre la doy,\npor los habitantes de nuestra nación.",
+      "Carabinas treinta treinta\nque cargamos los rebeldes\nque viva el Señor Madero\ndesde’l veinte de noviembre.",
+      "Gritaba Francisco Villa:\n¿Dónde te hallas Argumedo?\nNos veremos en Bachimba:\ntú que nunca tienes miedo.",
+    ].join("\n\n"),
+  },
   {
     label: "La plaza · coro",
     poem: "Trae tu silla a la plaza.\nDonde ayer cabía una orden\nhoy caben cien voces\ny queda sitio para la tuya.",

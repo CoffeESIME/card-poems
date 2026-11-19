@@ -67,6 +67,132 @@ export function collectiveFrames(d: Design, w: number, h: number) {
   }
 
   switch (template.id) {
+    case "cancionero":
+      frame = (
+        <path
+          d={`M${m + 6} ${m} V${foot} M${m + 12} ${m} V${foot}`}
+          opacity=".3"
+        />
+      );
+      tick = <circle r="1.6" fill={detail} stroke="none" />;
+      header = (
+        <g stroke={detail}>
+          <path d="M-112 0 h73 m78 0 h73" />
+          <path
+            d="M-28 0 Q-12 -2 0 -22 Q12 -2 28 0 Q10 4 0 19 Q-10 4 -28 0Z"
+            fill={detail}
+          />
+          <circle r="4" fill={paper} stroke="none" />
+        </g>
+      );
+      footer = (
+        <g>
+          <path d="M-69 2 Q-42 -10 -27 0 T0 0 T27 0 T69 2 M-44 7 Q-24 13 -12 7 M12 7 Q24 13 44 7" />
+          <circle cy="-5" r="4" fill={detail} stroke="none" />
+        </g>
+      );
+      break;
+    case "mojonera":
+      header = (
+        <g>
+          <path
+            d="M-147 7 l74 -43 90 8 44 -11 84 29 -58 41 -98 -5 -59 15Z"
+            fill={ornament}
+            fillOpacity=".12"
+          />
+          <path d="M-73 -36 l42 46 -39 31 M-31 10 l48 -38 M-31 10 l118 21 M61 -39 l-19 60" />
+          <path
+            d="M-139 29 l61 -12 36 -19 67 -1 104 -23"
+            stroke={detail}
+            strokeDasharray="9 5"
+            strokeWidth={3 * d.thickness}
+          />
+        </g>
+      );
+      footer = (
+        <g>
+          {[-2, -1, 0, 1, 2].map((i) => (
+            <path
+              key={i}
+              d={`M${i * 18 - 30} -9 Q${i * 36 - 50} 8 ${i * 72 - 9} 36`}
+            />
+          ))}
+          <path d="M27 10 l2 -47 19 -5 6 49Z" fill={paper} />
+          <path d="M29 -37 l8 8 11 -13 M37 -29 l2 39" stroke={detail} />
+        </g>
+      );
+      break;
+    case "petrograd":
+      header = (
+        <g>
+          <path
+            d="M-105 18 C-111 -5 -85 -38 -23 -42 C28 -48 90 -30 106 7 Q113 25 88 30 Q-14 45 -92 30Z"
+            fill={detail}
+            stroke="none"
+          />
+          <path
+            d="M-58 -22 q-19 14 -21 29 M-18 -32 q-22 17 -24 36 M23 -32 q-22 17 -23 36 M63 -25 q-19 15 -20 29"
+            stroke={paper}
+            strokeWidth={4 * d.thickness}
+          />
+          <path d="M-124 40 q50 9 79 5 m13 0 q86 1 141 -10" />
+        </g>
+      );
+      footer = (
+        <g>
+          {[-3, -2, -1, 0, 1, 2, 3].map((i) => (
+            <g
+              key={i}
+              transform={`translate(${i * 44} ${i % 2 === 0 ? -12 : 12}) rotate(68)`}
+            >
+              <path
+                d="M-8 -9 Q-11 -26 0 -27 Q12 -26 9 -8 L6 3 h-13Z M-7 7 h13 l1 7 q-8 5 -14 0Z"
+                fill={ornament}
+                stroke="none"
+              />
+            </g>
+          ))}
+        </g>
+      );
+      break;
+    case "doleances":
+      header = (
+        <g>
+          <path
+            d="M-92 -35 Q-44 -49 0 -28 Q42 -48 92 -35 v66 Q42 19 0 38 Q-40 20 -92 32Z"
+            fill={paper}
+          />
+          <path d="M-96 -29 v67 Q-44 25 0 44 Q45 27 97 39 v-67 M0 -28 v65" />
+          {[-19, -6, 7].map((y) => (
+            <path
+              key={y}
+              d={`M-77 ${y} q33 -7 62 4 M15 ${y + 4} q30 -10 60 -6`}
+            />
+          ))}
+          <path
+            d="M-5 -16 l10 4 m-10 11 l10 4 m-10 11 l10 4"
+            stroke={detail}
+            strokeWidth={3 * d.thickness}
+          />
+        </g>
+      );
+      footer = (
+        <g>
+          <path d="M-135 18 h62 m142 0 h66" />
+          {[
+            [-29, 6],
+            [27, 4],
+            [1, -9],
+          ].map(([x, y]) => (
+            <g key={x} transform={`translate(${x} ${y}) rotate(-9)`}>
+              <path d="M-23 0 v7 a23 10 0 0 0 46 0 v-7Z" fill={detail} />
+              <ellipse rx="23" ry="10" fill={paper} />
+              <ellipse rx="17" ry="6" stroke={detail} />
+            </g>
+          ))}
+        </g>
+      );
+      break;
     case "broadside":
       header = (
         <g>

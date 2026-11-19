@@ -868,6 +868,7 @@ export default function App() {
                         update({
                           poem: e.poem,
                           author: e.author,
+                          ...(e.title ? { title: e.title } : {}),
                           font:
                             i === 3 ? "japanese" : i === 4 ? "arabic" : "serif",
                           direction: "auto",

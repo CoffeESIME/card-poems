@@ -106,6 +106,66 @@ export const collectiveTemplates = [
       ink: "#51332c",
     },
   },
+  {
+    id: "cancionero",
+    tradition: "revolt",
+    name: "Hoja de corrido",
+    subtitle: "Revolución mexicana · cancionero",
+    description:
+      "Papel crema, tinta negra y una viñeta roja, como en la página de Carabina 30-30. Dedica una copla a quien partió y otra a quien se quedó para contar la historia.",
+    palette: {
+      name: "Carmín de cancionero",
+      paper: "#f2e8d6",
+      ornament: "#44362e",
+      detail: "#a54137",
+      ink: "#322b27",
+    },
+  },
+  {
+    id: "mojonera",
+    tradition: "revolt",
+    name: "Donde estaba la mojonera",
+    subtitle: "Revolución mexicana · despojo de tierras",
+    description:
+      "Un plano de parcelas y un lindero cortan los surcos. Cuenta la violencia del despojo desde la voz de alguien que todavía recuerda el nombre de cada pedazo de tierra.",
+    palette: {
+      name: "Tierra de temporal",
+      paper: "#e8dfc7",
+      ornament: "#60533b",
+      detail: "#995836",
+      ink: "#393529",
+    },
+  },
+  {
+    id: "petrograd",
+    tradition: "revolt",
+    name: "La fila del pan",
+    subtitle: "Revolución rusa · Petrogrado, 1917",
+    description:
+      "Una hogaza sobre tinta oscura y unas pisadas en la nieve recuerdan a las mujeres que salieron a pedir pan en Petrogrado. Empieza en la fila, justo cuando una mujer le guarda el sitio a otra.",
+    palette: {
+      name: "Nieve y centeno",
+      paper: "#27363e",
+      ornament: "#d9ddd5",
+      detail: "#e7a56d",
+      ink: "#faf1df",
+    },
+  },
+  {
+    id: "doleances",
+    tradition: "revolt",
+    name: "Cuaderno de agravios",
+    subtitle: "Revolución francesa · Francia, 1789",
+    description:
+      "Un cuaderno cosido y tres monedas evocan las quejas por el reparto desigual de los impuestos en 1789. Haz las cuentas de una casa pobre. ¿Qué petición dejaría esa familia por escrito?",
+    palette: {
+      name: "Azul de escribanía",
+      paper: "#e8e6dc",
+      ornament: "#415775",
+      detail: "#9e5842",
+      ink: "#303849",
+    },
+  },
 ] as const satisfies ReadonlyArray<{
   id: string;
   tradition: Tradition;
