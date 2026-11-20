@@ -3,6 +3,7 @@ import { fontFamilies } from "./fonts";
 import { wrapPoem, paginateLines } from "./text";
 export function readingInset(d: Design) {
   const clearance = {
+    offrule: 95,
     sewnletter: 165,
     ravinerifle: 190,
     tinbowl: 165,

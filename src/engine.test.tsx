@@ -36,14 +36,14 @@ describe("ornamental library", () => {
     expect(distinct.size).toBe(templates.length);
   });
   it("exposes eighteen collections with stable unique template IDs", () => {
-    expect(new Set(templates.map((t) => t.id)).size).toBe(84);
+    expect(new Set(templates.map((t) => t.id)).size).toBe(85);
     expect(traditions).toHaveLength(18);
     const sizes: Record<string, number> = {
       war: 4,
       revolt: 7,
       labor: 2,
       leisure: 2,
-      satire: 6,
+      satire: 7,
       dark: 6,
       romantic: 4,
       mystic: 4,

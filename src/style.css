@@ -2076,3 +2076,12 @@ summary::-webkit-details-marker {
     margin-right: auto;
   }
 }
+.load-fragment {
+  margin-top: 0.5rem;
+  padding: 0.25rem 0;
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  background: transparent;
+  border: 0;
+}

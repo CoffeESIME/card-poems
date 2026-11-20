@@ -8,6 +8,7 @@ const ids = [
   "classified",
   "littlefarce",
   "falseglory",
+  "offrule",
 ];
 
 export function satiricalFrames(d: Design, w: number, h: number) {
@@ -22,6 +23,67 @@ export function satiricalFrames(d: Design, w: number, h: number) {
   let frame: ReactNode = null,
     pattern: ReactNode = null,
     ornaments: ReactNode = null;
+  if (d.template === "offrule") {
+    const marginLine = m + 34;
+    const baseline = m + 88;
+    frame = (
+      <g stroke={detail} opacity=".58">
+        <path d={`M${marginLine} 0 V${h}`} />
+        <path d={`M${marginLine + 5} 0 V${h}`} opacity=".35" />
+      </g>
+    );
+    pattern = (
+      <g opacity=".34">
+        {top &&
+          [0, 1, 2].map((row) => (
+            <path key={row} d={`M0 ${baseline - (2 - row) * 26} H${w - m}`} />
+          ))}
+        {bottom && <path d={`M0 ${h - m - 42} H${w - m}`} />}
+      </g>
+    );
+    // Fit the exercise between the red margin and the drawing, at every density.
+    const loopCount = Math.max(3, count);
+    const step = (w * 0.45 - marginLine) / loopCount;
+    const loops = Array.from(
+      { length: loopCount },
+      (_, i) =>
+        `C${i * step + step * 0.42} 0 ${i * step + step * 0.72} ${-26 * scale} ${i * step + step * 0.45} ${-22 * scale} S${i * step + step * 0.27} 3 ${(i + 1) * step} 0`,
+    ).join(" ");
+    ornaments = (
+      <>
+        {top && (
+          <g
+            transform={`translate(${marginLine + 18} ${baseline})`}
+            strokeLinecap="round"
+          >
+            <path d={`M0 0 ${loops} q33 -1 54 -18 t63 -15 q33 5 65 -11`} />
+            <g
+              transform={`translate(${loopCount * step + 184} -43) scale(${scale})`}
+            >
+              <path
+                d="M0 0 Q28 -13 56 -17 Q47 -32 29 -51 Q59 -43 81 -22 Q88 -26 96 -23 L109 -24 99 -18 Q92 -10 80 -8 Q66 3 45 5 L19 21 32 3 0 12 21 0Z"
+                fill={d.palette.ornament}
+              />
+              <path
+                d="M46 -40 Q64 -30 76 -20 M40 1 Q63 -1 74 -9"
+                stroke={d.palette.paper}
+              />
+            </g>
+          </g>
+        )}
+        {bottom && (
+          <g
+            transform={`translate(${w - m - 133} ${h - m - 41}) rotate(-8) scale(${scale})`}
+          >
+            <path d="M-85 0 l23 -7 h126 l7 4 v7 l-7 3 H-62Z" fill={detail} />
+            <path d="M-85 0 l23 -7 4 5 -3 3 3 4 -4 2Z" fill={d.palette.paper} />
+            <path d="M-85 0 l8 -2 1 4Z" fill={d.palette.ink} />
+            <path d="M-55 -2 H60" stroke={d.palette.paper} opacity=".68" />
+          </g>
+        )}
+      </>
+    );
+  }
   if (d.template === "epitaph") {
     frame = (
       <>

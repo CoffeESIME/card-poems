@@ -1,6 +1,6 @@
 # Folio · Taller de palabras
 
-Editor local para componer máximas, frases y poemas con 84 marcos vectoriales en dieciocho colecciones, entre ellas Guerra y testimonio, Revuelta y derechos, Obreros y máquinas y Descanso y gozo. React + TypeScript + Vite. Sin cuentas, backend, imágenes remotas ni servicios obligatorios durante el uso.
+Editor local para componer máximas, frases y poemas con 85 marcos vectoriales en dieciocho colecciones, entre ellas Guerra y testimonio, Revuelta y derechos, Obreros y máquinas y Descanso y gozo. React + TypeScript + Vite. Sin cuentas, backend, imágenes remotas ni servicios obligatorios durante el uso.
 
 ## Iniciar
 
@@ -62,7 +62,7 @@ Los diseños usan estrellas de 8, 10 y 12 puntas, repeticiones seigaiha, tramas 
 - `src/LandscapeFrames.tsx`: las doce composiciones nuevas y sus motivos botánicos, paisajes y geometría contemplativa, organizados en las mismas tres capas decorativas.
 - `src/LiteraryFrames.tsx`: seis marcos para máximas francesas y textos de caminantes y naturalistas.
 - `src/darkTemplates.ts` y `src/DarkFrames.tsx`: seis diseños de cuerpo, decadencia y apocalipsis; galería en `/.qa/index.html?dark`.
-- `src/SatiricalFrames.tsx`: seis marcos para epitafios, humor negro, sátira burocrática y pequeñas farsas.
+- `src/SatiricalFrames.tsx`: siete marcos para epitafios, humor negro, sátira burocrática, pequeñas farsas y desobediencia. **Fuera del renglón** permite cargar el fragmento de «El amigo ido» de Salvador Novo desde la descripción del marco.
 - `src/PoeticFrames.tsx`: seis composiciones de romanticismo, misticismo y espera y vacío.
 - `src/variants.ts` y `src/VariantFrames.tsx`: 24 variantes adicionales, dos por colección, con metadatos, paletas y motivos vectoriales propios.
 - `src/layout.ts`: medición tipográfica y cálculo común de páginas para vista previa y exportación.
@@ -75,7 +75,7 @@ Los diseños usan estrellas de 8, 10 y 12 puntas, repeticiones seigaiha, tramas 
 - `src/App.tsx`: interacción del editor y biblioteca local.
 - `src/style.css`: diseño editorial, estados accesibles y adaptación a móvil.
 - `src/engine.test.tsx`: pruebas de geometría, referencias SVG, formatos, Unicode y conservación del poema.
-- `src/qa-gallery.tsx`: entrada de revisión visual; no se incluye en el build de producción. Durante desarrollo, `/.qa/index.html` muestra todos los marcos en cuadrado y vertical; `/.qa/index.html?landscapes` muestra únicamente los doce paisajes. `/.qa/index.html?variants` muestra las 24 variantes nuevas. `/.qa/index.html?satire` muestra los seis marcos de Ironía y sátira con textos originales del taller.
+- `src/qa-gallery.tsx`: entrada de revisión visual; no se incluye en el build de producción. Durante desarrollo, `/.qa/index.html` muestra todos los marcos en cuadrado y vertical; `/.qa/index.html?landscapes` muestra únicamente los doce paisajes. `/.qa/index.html?variants` muestra las 24 variantes nuevas. `/.qa/index.html?satire` muestra la colección Ironía y sátira.
 - `docs/`: capturas de revisión y notas de validación.
 
 Para incorporar otro marco, añade su identificador y metadatos en `model.ts`, su espacio de lectura en `readingInset` y su composición en `LandscapeFrames.tsx` (o en el motor original, `Composition.tsx`). Cada caso entrega tres capas: `pattern`, `frame` y `ornaments`. El resto del editor y los exportadores lo admiten sin modificaciones. Los motivos usan coordenadas locales y las dimensiones del formato para mantener sus proporciones. Los contadores y la numeración de la galería se calculan desde los metadatos.

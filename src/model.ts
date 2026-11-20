@@ -26,6 +26,7 @@ export type Tradition =
   | "french"
   | "wanderer";
 export type TemplateId =
+  | "offrule"
   | WarTemplateId
   | CollectiveTemplateId
   | DarkTemplateId
@@ -823,7 +824,52 @@ export const templates: Template[] = [
   },
   ...collectiveTemplates,
   ...warTemplates,
+  {
+    id: "offrule",
+    tradition: "satire",
+    name: "Fuera del renglón",
+    subtitle: "Infancia y desobediencia",
+    description:
+      "Tres renglones para aprender la letra. En el último, al lápiz le da por dibujar una golondrina. Una hoja para las cosas que uno quisiera desaprender antes de enseñárselas a un hijo.",
+    palette: {
+      name: "Cuaderno de lápiz rojo",
+      paper: "#f5eedf",
+      ornament: "#527283",
+      detail: "#a64639",
+      ink: "#303a3e",
+    },
+  },
 ];
+
+export const novoFragment = {
+  title: "",
+  poem: [
+    "Pero si tengo un hijo",
+    "haré que nadie nunca le enseñe nada.",
+    "Quiero que sea tan perezoso y feliz",
+    "como a mí no me dejaron mis padres",
+    "ni a mis padres mis abuelos",
+    "ni mis abuelos Dios.",
+  ].join("\n"),
+  author: "Fragmento de «El amigo ido» de Salvador Novo.",
+  font: "lora",
+  fontSize: 37,
+  align: "left",
+  lineHeight: 1.6,
+  horizontalSpace: -24,
+  verticalSpace: 0,
+  innerMargin: 18,
+  position: 50,
+  letterSpacing: 0,
+  bold: false,
+  italic: false,
+  authorSize: 24,
+  authorItalic: true,
+  authorBold: false,
+  authorGap: 48,
+  authorPosition: "below",
+  direction: "ltr",
+} satisfies Partial<Design>;
 export const examples: {
   label: string;
   poem: string;

@@ -33,6 +33,7 @@ import {
   dimensions,
   examples,
   freshDesign,
+  novoFragment,
   palettes,
   templates,
   traditions,
@@ -664,6 +665,14 @@ export default function App() {
               </span>
               <h2>{template.name}</h2>
               <p>{template.description}</p>
+              {template.id === "offrule" && (
+                <button
+                  className="load-fragment"
+                  onClick={() => update(novoFragment)}
+                >
+                  Usar el fragmento de Salvador Novo
+                </button>
+              )}
             </div>
             <span className="story-edition">
               COLECCIÓN
