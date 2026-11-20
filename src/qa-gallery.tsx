@@ -13,31 +13,36 @@ const landscapesOnly = new URLSearchParams(location.search).has("landscapes");
 const variantsOnly = new URLSearchParams(location.search).has("variants");
 const satireOnly = new URLSearchParams(location.search).has("satire");
 const darkOnly = new URLSearchParams(location.search).has("dark");
-const reviewedTemplates = darkOnly
-  ? templates.filter((t) => t.tradition === "dark")
-  : satireOnly
-    ? templates.filter((t) => t.tradition === "satire")
-    : variantsOnly
-      ? variantTemplates
-      : landscapesOnly
-        ? templates.filter((t) =>
-            ["zen", "nature", "tao", "mountain"].includes(t.tradition),
-          )
-        : templates;
+const proposalsOnly = new URLSearchParams(location.search).has("proposals");
+const reviewedTemplates = proposalsOnly
+  ? templates.filter((t) => t.edition === "proposed")
+  : darkOnly
+    ? templates.filter((t) => t.tradition === "dark")
+    : satireOnly
+      ? templates.filter((t) => t.tradition === "satire")
+      : variantsOnly
+        ? variantTemplates
+        : landscapesOnly
+          ? templates.filter((t) =>
+              ["zen", "nature", "tao", "mountain"].includes(t.tradition),
+            )
+          : templates;
 document.fonts.load('47px "Cormorant Garamond"').then(() =>
   createRoot(document.getElementById("root")!).render(
     <>
       <h1>
         Folio ·{" "}
-        {darkOnly
-          ? "Visceral y apocalíptica"
-          : satireOnly
-            ? "Ironía y sátira"
-            : variantsOnly
-              ? "24 nuevas variantes"
-              : landscapesOnly
-                ? "Nuevos horizontes"
-                : "Colección Orígenes"}
+        {proposalsOnly
+          ? "Nuevas propuestas"
+          : darkOnly
+            ? "Visceral y apocalíptica"
+            : satireOnly
+              ? "Ironía y sátira"
+              : variantsOnly
+                ? "24 nuevas variantes"
+                : landscapesOnly
+                  ? "Nuevos horizontes"
+                  : "Colección Orígenes"}
       </h1>
       <main>
         {reviewedTemplates.map((t) => (

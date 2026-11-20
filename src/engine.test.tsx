@@ -5,6 +5,7 @@ import {
   changeTemplate,
   dimensions,
   freshDesign,
+  templateEdition,
   templates,
   traditions,
 } from "./model";
@@ -35,10 +36,14 @@ describe("ornamental library", () => {
       }
     expect(distinct.size).toBe(templates.length);
   });
-  it("exposes eighteen collections with stable unique template IDs", () => {
-    expect(new Set(templates.map((t) => t.id)).size).toBe(85);
+  it("exposes eighteen collections with stable unique template IDs in both editions", () => {
+    const classic = templates.filter((t) => templateEdition(t) === "classic");
+    const proposed = templates.filter((t) => templateEdition(t) === "proposed");
+    expect(new Set(templates.map((t) => t.id)).size).toBe(143);
+    expect(classic).toHaveLength(85);
+    expect(proposed).toHaveLength(58);
     expect(traditions).toHaveLength(18);
-    const sizes: Record<string, number> = {
+    const classicSizes: Record<string, number> = {
       war: 4,
       revolt: 7,
       labor: 2,
@@ -49,10 +54,42 @@ describe("ornamental library", () => {
       mystic: 4,
       absence: 4,
     };
-    for (const tradition of traditions)
+    const proposedSizes: Record<string, number> = {
+      war: 4,
+      revolt: 4,
+      dark: 4,
+      satire: 4,
+    };
+    for (const tradition of traditions) {
       expect(
-        templates.filter((t) => t.tradition === tradition.id),
-      ).toHaveLength(sizes[tradition.id] ?? 5);
+        classic.filter((t) => t.tradition === tradition.id),
+      ).toHaveLength(classicSizes[tradition.id] ?? 5);
+      expect(
+        proposed.filter((t) => t.tradition === tradition.id),
+      ).toHaveLength(proposedSizes[tradition.id] ?? 3);
+    }
+  });
+  it("keeps SVG references valid even when toggling individual layers on proposed frames", () => {
+    const proposed = templates.filter((t) => templateEdition(t) === "proposed");
+    for (const t of proposed) {
+      for (const hidden of ["pattern", "frame", "ornaments"] as const) {
+        const d = freshDesign(t.id);
+        const markup = renderToStaticMarkup(
+          <Composition
+            design={{
+              ...d,
+              layers: { ...d.layers, [hidden]: false },
+            }}
+          />,
+        );
+        expect(markup).not.toMatch(/NaN|Infinity|undefined/);
+        const ids = [...markup.matchAll(/\sid="([^"]+)"/g)].map(
+          (match) => match[1],
+        );
+        for (const ref of markup.matchAll(/url\(#([^\)]+)\)/g))
+          expect(ids).toContain(ref[1]);
+      }
+    }
   });
   it("keeps new ornaments valid at both extremes of their customization controls", () => {
     for (const t of templates)

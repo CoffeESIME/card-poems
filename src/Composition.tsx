@@ -16,6 +16,7 @@ import {
 import { warFrames } from "./WarFrames";
 import { collectiveFrames } from "./CollectiveFrames";
 import { landscapeFrames } from "./LandscapeFrames";
+import { proposalFrames } from "./proposals";
 
 export function starPoints(
   cx: number,
@@ -715,6 +716,7 @@ export function Composition({
       );
   }
   const landscape =
+    proposalFrames(d, id, w, h) ??
     warFrames(d, w, h) ??
     collectiveFrames(d, w, h) ??
     darkFrames(d, w, h) ??

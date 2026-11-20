@@ -6,6 +6,12 @@ import {
   collectiveTemplates,
   type CollectiveTemplateId,
 } from "./collectiveTemplates";
+import {
+  proposalTemplates,
+  type ProposalTemplateId,
+} from "./proposalTemplates";
+
+export type FrameEdition = "classic" | "proposed";
 
 export type Tradition =
   | "war"
@@ -28,6 +34,7 @@ export type Tradition =
   | "wanderer";
 export type TemplateId =
   | "offrule"
+  | ProposalTemplateId
   | WarTemplateId
   | CollectiveTemplateId
   | DarkTemplateId
@@ -128,11 +135,16 @@ export type Design = {
 export type Template = {
   id: TemplateId;
   tradition: Tradition;
+  edition?: FrameEdition;
   name: string;
   subtitle: string;
   description: string;
   palette: Palette;
 };
+
+export function templateEdition(template: Template): FrameEdition {
+  return template.edition ?? "classic";
+}
 export const traditions: {
   id: Tradition;
   label: string;
@@ -842,6 +854,7 @@ export const templates: Template[] = [
       ink: "#303a3e",
     },
   },
+  ...proposalTemplates.map((t) => ({ ...t, edition: "proposed" as const })),
 ];
 
 export const novoFragment = {

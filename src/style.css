@@ -2200,3 +2200,48 @@ summary::-webkit-details-marker {
 .photo-error {
   color: #953e32;
 }
+.edition-menu {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  padding: 3px;
+  margin-bottom: 20px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: #f3f2ea;
+}
+.edition-menu button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 8px 6px;
+  border-radius: 3px;
+  color: #5b6154;
+  text-align: center;
+}
+.edition-menu button > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.76rem;
+  font-weight: 500;
+}
+.edition-menu button > small {
+  font-size: 0.61rem;
+  opacity: 0.72;
+}
+.edition-menu button:hover {
+  background: #eaeae0;
+}
+.edition-menu button[aria-pressed="true"] {
+  background: #a94f3c;
+  color: #fffaf0;
+}
+.edition-menu button[aria-pressed="true"]:hover {
+  background: #91402f;
+}
+.edition-menu button[aria-pressed="true"] > small {
+  opacity: 0.88;
+}

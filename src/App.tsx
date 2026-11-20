@@ -37,9 +37,11 @@ import {
   freshDesign,
   novoFragment,
   palettes,
+  templateEdition,
   templates,
   traditions,
   type Design,
+  type FrameEdition,
   type Tradition,
 } from "./model";
 import { layoutText } from "./layout";
@@ -270,6 +272,25 @@ export default function App() {
   );
   const [tradition, setTradition] = useState<Tradition>(
     () => templates.find((t) => t.id === design.template)!.tradition,
+  );
+  const [edition, setEdition] = useState<FrameEdition>(() =>
+    templateEdition(templates.find((t) => t.id === design.template)!),
+  );
+  const classicCount = useMemo(
+    () => templates.filter((t) => templateEdition(t) === "classic").length,
+    [],
+  );
+  const proposedCount = useMemo(
+    () => templates.filter((t) => templateEdition(t) === "proposed").length,
+    [],
+  );
+  const editionTemplates = useMemo(
+    () => templates.filter((t) => templateEdition(t) === edition),
+    [edition],
+  );
+  const visibleTemplates = useMemo(
+    () => editionTemplates.filter((t) => t.tradition === tradition),
+    [editionTemplates, tradition],
   );
   const [panel, setPanel] = useState<"text" | "ornament">("text");
   const [guides, setGuides] = useState(false),
@@ -590,6 +611,42 @@ export default function App() {
             />
           ) : (
             <>
+              <SectionLabel
+                aside={
+                  <span className="subtle">
+                    {edition === "proposed"
+                      ? `${proposedCount} propuestas`
+                      : `${classicCount} originales`}
+                  </span>
+                }
+              >
+                COLECCIÓN DE MARCOS
+              </SectionLabel>
+              <div
+                className="edition-menu"
+                role="group"
+                aria-label="Selección entre marcos originales y nuevas propuestas"
+              >
+                <button
+                  type="button"
+                  aria-pressed={edition === "classic"}
+                  onClick={() => setEdition("classic")}
+                >
+                  <span>Originales</span>
+                  <small>Marcos previos</small>
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={edition === "proposed"}
+                  onClick={() => setEdition("proposed")}
+                >
+                  <span>
+                    <Sparkles size={12} />
+                    Propuestas
+                  </span>
+                  <small>Nuevas formas</small>
+                </button>
+              </div>
               <SectionLabel>ESTILO Y TRADICIÓN</SectionLabel>
               <div
                 className="traditions"
@@ -613,41 +670,39 @@ export default function App() {
                 <span>
                   {traditions.find((t) => t.id === tradition)!.region}
                 </span>
-                <span>
-                  {templates.filter((t) => t.tradition === tradition).length}{" "}
-                  marcos
-                </span>
+                <span>{visibleTemplates.length} marcos</span>
               </div>
               <div className="template-list">
-                {templates
-                  .filter((t) => t.tradition === tradition)
-                  .map((t) => (
-                    <button
-                      className={`template-card ${design.template === t.id ? "selected" : ""}`}
-                      key={t.id}
-                      onClick={() => setDesign((d) => changeTemplate(d, t))}
-                      aria-pressed={design.template === t.id}
-                    >
-                      <div className="template-art">
-                        <Composition
-                          design={{ ...freshDesign(t.id), format: "square" }}
-                          thumbnail
-                        />
-                        {design.template === t.id && (
-                          <span className="selected-mark">
-                            <Check size={12} />
-                          </span>
-                        )}
-                      </div>
-                      <div>
-                        <span className="template-number">
-                          {String(templates.indexOf(t) + 1).padStart(2, "0")}
+                {visibleTemplates.map((t) => (
+                  <button
+                    className={`template-card ${design.template === t.id ? "selected" : ""}`}
+                    key={t.id}
+                    onClick={() => setDesign((d) => changeTemplate(d, t))}
+                    aria-pressed={design.template === t.id}
+                  >
+                    <div className="template-art">
+                      <Composition
+                        design={{ ...freshDesign(t.id), format: "square" }}
+                        thumbnail
+                      />
+                      {design.template === t.id && (
+                        <span className="selected-mark">
+                          <Check size={12} />
                         </span>
-                        <h3>{t.name}</h3>
-                        <p>{t.subtitle}</p>
-                      </div>
-                    </button>
-                  ))}
+                      )}
+                    </div>
+                    <div>
+                      <span className="template-number">
+                        {String(editionTemplates.indexOf(t) + 1).padStart(
+                          2,
+                          "0",
+                        )}
+                      </span>
+                      <h3>{t.name}</h3>
+                      <p>{t.subtitle}</p>
+                    </div>
+                  </button>
+                ))}
               </div>
               <div className="palette-section">
                 <SectionLabel>
@@ -682,11 +737,12 @@ export default function App() {
                     <div key={p.id}>
                       <button
                         onClick={() => {
+                          const target = templates.find(
+                            (t) => t.id === p.template,
+                          )!;
                           update({ template: p.template, palette: p.palette });
-                          setTradition(
-                            templates.find((t) => t.id === p.template)!
-                              .tradition,
-                          );
+                          setTradition(target.tradition);
+                          setEdition(templateEdition(target));
                         }}
                       >
                         {p.name}
@@ -850,9 +906,19 @@ export default function App() {
                 )}
               </div>
               <span className="story-edition">
-                COLECCIÓN
-                <br />
-                <b>ORÍGENES</b>
+                {templateEdition(template) === "proposed" ? (
+                  <>
+                    NUEVAS
+                    <br />
+                    <b>PROPUESTAS</b>
+                  </>
+                ) : (
+                  <>
+                    COLECCIÓN
+                    <br />
+                    <b>ORÍGENES</b>
+                  </>
+                )}
               </span>
             </div>
           )}
@@ -1556,8 +1622,11 @@ export default function App() {
               <button
                 className="button quiet"
                 onClick={() => {
-                  setDesign(freshDesign());
-                  setTradition("persian");
+                  const next = freshDesign();
+                  const target = templates.find((t) => t.id === next.template)!;
+                  setDesign(next);
+                  setTradition(target.tradition);
+                  setEdition(templateEdition(target));
                   setCollection(false);
                 }}
               >
@@ -1573,10 +1642,13 @@ export default function App() {
                       className="saved-preview"
                       aria-label={`Abrir ${d.name}`}
                       onClick={() => {
-                        setDesign(hydrateDesign(d));
-                        setTradition(
-                          templates.find((t) => t.id === d.template)!.tradition,
-                        );
+                        const hydrated = hydrateDesign(d);
+                        const target = templates.find(
+                          (t) => t.id === hydrated.template,
+                        )!;
+                        setDesign(hydrated);
+                        setTradition(target.tradition);
+                        setEdition(templateEdition(target));
                         setCollection(false);
                       }}
                     >
