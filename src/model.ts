@@ -1,11 +1,13 @@
 import { variantTemplates, type VariantId } from "./variants";
 import { darkTemplates, type DarkTemplateId } from "./darkTemplates";
+import { warTemplates, type WarTemplateId } from "./warTemplates";
 import {
   collectiveTemplates,
   type CollectiveTemplateId,
 } from "./collectiveTemplates";
 
 export type Tradition =
+  | "war"
   | "revolt"
   | "labor"
   | "leisure"
@@ -24,6 +26,7 @@ export type Tradition =
   | "french"
   | "wanderer";
 export type TemplateId =
+  | WarTemplateId
   | CollectiveTemplateId
   | DarkTemplateId
   | "epitaph"
@@ -132,6 +135,12 @@ export const traditions: {
   region: string;
   mark: string;
 }[] = [
+  {
+    id: "war",
+    label: "Guerra y testimonio",
+    region: "Frente, cautiverio y memoria",
+    mark: "✣",
+  },
   {
     id: "revolt",
     label: "Revuelta y derechos",
@@ -813,6 +822,7 @@ export const templates: Template[] = [
     },
   },
   ...collectiveTemplates,
+  ...warTemplates,
 ];
 export const examples: {
   label: string;

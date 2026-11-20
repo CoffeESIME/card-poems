@@ -7,6 +7,7 @@ import { poeticFrames } from "./PoeticFrames";
 import { variantFrames } from "./VariantFrames";
 import { satiricalFrames } from "./SatiricalFrames";
 import { darkFrames } from "./DarkFrames";
+import { warFrames } from "./WarFrames";
 import { collectiveFrames } from "./CollectiveFrames";
 import { landscapeFrames } from "./LandscapeFrames";
 
@@ -693,6 +694,7 @@ export function Composition({
       );
   }
   const landscape =
+    warFrames(d, w, h) ??
     collectiveFrames(d, w, h) ??
     darkFrames(d, w, h) ??
     satiricalFrames(d, w, h) ??
