@@ -23,6 +23,8 @@ npm run preview  # Servir la compilación de producción
 
 ## Uso
 
+En **Fondo de la lámina**, elige **Marco** para usar la biblioteca ornamental o **Imagen de fondo** para subir un JPG, PNG o WebP. La foto se procesa en tu dispositivo y se encuadra al centro según el formato. El editor detecta el color predominante, aplica una paleta para título, texto y autoría y ajusta la opacidad inicial. Puedes editar los tres colores, cambiar la opacidad o recuperar la sugerencia. La composición guarda una copia optimizada de la imagen.
+
 1. Elige un estilo o tradición y uno de sus marcos. El poema se conserva al cambiar de marco.
 2. Escribe el poema, título y autoría. Se conservan versos y estrofas; los versos demasiado anchos se dividen según el ancho real de la fuente.
 3. Ajusta tipografía, alineación, interlineado, espacio entre letras y posición. La dirección se detecta automáticamente o puede fijarse en los ajustes avanzados.

@@ -1,5 +1,6 @@
 import { variantTemplates, type VariantId } from "./variants";
 import { darkTemplates, type DarkTemplateId } from "./darkTemplates";
+import type { PhotoBackground } from "./photo";
 import { warTemplates, type WarTemplateId } from "./warTemplates";
 import {
   collectiveTemplates,
@@ -78,6 +79,8 @@ export type Palette = {
   ink: string;
 };
 export type Design = {
+  backgroundMode: "frame" | "photo";
+  photo: PhotoBackground | null;
   id: string;
   name: string;
   template: TemplateId;
@@ -966,6 +969,8 @@ export const dimensions = {
 } as const;
 export function freshDesign(template: TemplateId = "stars"): Design {
   return {
+    backgroundMode: "frame",
+    photo: null,
     id: crypto.randomUUID(),
     name: "Un jardín en la noche",
     template,

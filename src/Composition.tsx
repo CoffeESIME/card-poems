@@ -7,6 +7,12 @@ import { poeticFrames } from "./PoeticFrames";
 import { variantFrames } from "./VariantFrames";
 import { satiricalFrames } from "./SatiricalFrames";
 import { darkFrames } from "./DarkFrames";
+import {
+  backgroundRange,
+  photoPaper,
+  textOutline,
+  type TextColors,
+} from "./photo";
 import { warFrames } from "./WarFrames";
 import { collectiveFrames } from "./CollectiveFrames";
 import { landscapeFrames } from "./LandscapeFrames";
@@ -114,6 +120,21 @@ export function Composition({
   const id = `f${rawId.replace(/:/g, "").replace(/[^a-zA-Z0-9]/g, "")}`;
   const [w, h] = dimensions[d.format],
     { paper, ornament, detail, ink } = d.palette;
+  const photoMode = d.backgroundMode === "photo";
+  const photo = photoMode ? d.photo : null;
+  const range = photo && backgroundRange(photo, photo.opacity);
+  const photoText = (role: keyof TextColors) => {
+    if (!photo || !range) return {};
+    const fill = photo.colors[role];
+    const stroke = textOutline(fill, range);
+    return {
+      fill,
+      stroke,
+      strokeWidth: stroke ? "0.12em" : undefined,
+      paintOrder: "stroke",
+      strokeLinejoin: "round" as const,
+    };
+  };
   const m = d.margin,
     sw = 1.7 * d.thickness,
     unit = (100 * d.patternScale) / d.density;
@@ -908,8 +929,23 @@ export function Composition({
           />
         </clipPath>
       </defs>
-      <rect width={w} height={h} fill={paper} />
-      {d.layers.texture && !thumbnail && (
+      <rect
+        width={w}
+        height={h}
+        fill={photo ? photoPaper(photo.dominant) : paper}
+      />
+      {photo && (
+        <image
+          href={photo.src}
+          x="0"
+          y="0"
+          width={w}
+          height={h}
+          preserveAspectRatio="xMidYMid slice"
+          opacity={photo.opacity / 100}
+        />
+      )}
+      {!photoMode && d.layers.texture && !thumbnail && (
         <rect
           width={w}
           height={h}
@@ -926,9 +962,9 @@ export function Composition({
         opacity={d.opacity}
         strokeLinejoin="round"
       >
-        {d.layers.pattern && pattern}
-        {d.layers.frame && frame}
-        {d.layers.ornaments && ornaments}
+        {!photoMode && d.layers.pattern && pattern}
+        {!photoMode && d.layers.frame && frame}
+        {!photoMode && d.layers.ornaments && ornaments}
       </g>
       {!thumbnail && (
         <g
@@ -954,6 +990,7 @@ export function Composition({
               x={x}
               y={start + titleSize}
               fontSize={fitTitleSize}
+              {...photoText("title")}
               fontWeight={d.titleBold ? 600 : 400}
               fontStyle={d.titleItalic ? "italic" : "normal"}
             >
@@ -962,6 +999,7 @@ export function Composition({
           )}
           <text
             fontSize={size}
+            {...photoText("poem")}
             fontWeight={d.bold ? 600 : 400}
             fontStyle={d.italic ? "italic" : "normal"}
             letterSpacing={d.letterSpacing}
@@ -976,6 +1014,7 @@ export function Composition({
             <text
               data-author="true"
               fontSize={authorSize}
+              {...photoText("author")}
               fontWeight={d.authorBold ? 600 : 400}
               fontStyle={d.authorItalic ? "italic" : "normal"}
             >
@@ -989,7 +1028,7 @@ export function Composition({
         </g>
       )}
       {thumbnail && (
-        <g fill={ink} opacity=".65">
+        <g fill={photo?.colors.poem ?? ink} opacity=".65">
           {[0, 1, 2, 3].map((i) => (
             <rect
               key={i}
@@ -1010,7 +1049,8 @@ export function Composition({
           textAnchor="middle"
           fontFamily="serif"
           fontSize="20"
-          fill={ink}
+          fill={photo?.colors.poem ?? ink}
+          {...photoText("poem")}
         >
           {currentPage + 1} / {pages.length}
         </text>

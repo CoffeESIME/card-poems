@@ -89,7 +89,11 @@ export function readingInset(d: Design) {
     fieldnotes: 165,
     woodland: 190,
   }[d.template];
-  return Math.min(330, Math.max(155, d.margin + clearance) + d.innerMargin);
+  return Math.min(
+    330,
+    Math.max(155, d.margin + (d.backgroundMode === "photo" ? 100 : clearance)) +
+      d.innerMargin,
+  );
 }
 
 export function layoutText(d: Design) {
@@ -100,7 +104,8 @@ export function layoutText(d: Design) {
     80,
     Math.min(
       420,
-      (d.template === "alpine" || d.template === "mist"
+      (d.backgroundMode !== "photo" &&
+      (d.template === "alpine" || d.template === "mist")
         ? Math.max(195, baseInset - 55)
         : baseInset) + d.horizontalSpace,
     ),

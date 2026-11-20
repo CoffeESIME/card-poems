@@ -15,6 +15,7 @@ import {
   Feather,
   FolderOpen,
   Grid2X2,
+  Image as ImageIcon,
   Italic,
   Layers,
   Minus,
@@ -25,6 +26,7 @@ import {
   Sparkles,
   Trash2,
   Type,
+  Upload,
   X,
 } from "lucide-react";
 import { Composition } from "./Composition";
@@ -43,6 +45,7 @@ import {
 import { layoutText } from "./layout";
 import { zipImages } from "./zip";
 import { compositionBlob, download } from "./export";
+import { importPhoto, suggestPhotoStyle, type PhotoBackground } from "./photo";
 import { createExportNames } from "./exportNames";
 import {
   hydrateDesign,
@@ -134,6 +137,133 @@ function SectionLabel({
     </div>
   );
 }
+function PhotoControls({
+  photo,
+  onChange,
+}: {
+  photo: PhotoBackground | null;
+  onChange: (photo: PhotoBackground | null) => void;
+}) {
+  const request = useRef(0);
+  const [reading, setReading] = useState(false);
+  const [error, setError] = useState("");
+  useEffect(
+    () => () => {
+      request.current++;
+    },
+    [],
+  );
+
+  async function upload(file: File) {
+    const current = ++request.current;
+    setReading(true);
+    setError("");
+    try {
+      const next = await importPhoto(file);
+      if (current === request.current) onChange(next);
+    } catch (e) {
+      if (current === request.current)
+        setError(
+          e instanceof Error && e.name === "Error"
+            ? e.message
+            : "No se pudo leer la imagen. Prueba con otro archivo.",
+        );
+    } finally {
+      if (current === request.current) setReading(false);
+    }
+  }
+
+  return (
+    <div className="photo-controls">
+      <input
+        className="photo-input"
+        id="photo-file"
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          e.target.value = "";
+          if (file) void upload(file);
+        }}
+      />
+      <label className="photo-upload" htmlFor="photo-file">
+        {photo ? <img src={photo.src} alt="" /> : <ImageIcon size={28} />}
+        <strong>
+          <Upload size={15} />
+          {photo ? "Cambiar imagen" : "Subir mi imagen"}
+        </strong>
+        <span>{photo ? photo.name : "JPG, PNG o WebP"}</span>
+      </label>
+      {reading && <p role="status">Analizando los colores…</p>}
+      {error && (
+        <p className="photo-error" role="alert">
+          {error}
+        </p>
+      )}
+      {photo && (
+        <>
+          <div className="dominant-color">
+            <i style={{ backgroundColor: photo.dominant }} /> Color predominante{" "}
+            <code>{photo.dominant.toUpperCase()}</code>
+          </div>
+          <Range
+            label="Opacidad de la imagen"
+            value={photo.opacity}
+            min={0}
+            max={100}
+            unit="%"
+            onChange={(opacity) => onChange({ ...photo, opacity })}
+          />
+          <SectionLabel>COLORES DE LAS LETRAS</SectionLabel>
+          <div className="photo-colors">
+            {(
+              [
+                ["title", "Título"],
+                ["poem", "Texto"],
+                ["author", "Autoría"],
+              ] as const
+            ).map(([role, label]) => (
+              <label key={role}>
+                <input
+                  type="color"
+                  aria-label={`Color de ${label.toLowerCase()}`}
+                  value={photo.colors[role]}
+                  onChange={(e) =>
+                    onChange({
+                      ...photo,
+                      colors: { ...photo.colors, [role]: e.target.value },
+                    })
+                  }
+                />
+                {label}
+              </label>
+            ))}
+          </div>
+          <button
+            className="button quiet"
+            onClick={() => onChange({ ...photo, ...suggestPhotoStyle(photo) })}
+          >
+            <RotateCcw size={14} />
+            Usar paleta y opacidad sugeridas
+          </button>
+          <button
+            className="button quiet"
+            onClick={() => {
+              request.current++;
+              setReading(false);
+              setError("");
+              onChange(null);
+            }}
+          >
+            <Trash2 size={14} />
+            Quitar imagen
+          </button>
+        </>
+      )}
+    </div>
+  );
+}
+
 export default function App() {
   const [design, setDesign] = useState<Design>(() =>
     hydrateDesign(readLocal(keys.draft, null)),
@@ -148,7 +278,7 @@ export default function App() {
   const [collection, setCollection] = useState(false),
     [exportOpen, setExportOpen] = useState(false);
   const [saved, setSaved] = useState<Design[]>(() =>
-    readLocal(keys.designs, []),
+    readLocal<Design[]>(keys.designs, []).map(hydrateDesign),
   );
   const [presets, setPresets] = useState<Preset[]>(() =>
     readLocal(keys.presets, []),
@@ -169,6 +299,7 @@ export default function App() {
     exportRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLElement>(null);
   const template = templates.find((t) => t.id === design.template)!;
+  const photoMode = design.backgroundMode === "photo";
   const [width, height] = dimensions[design.format];
   const update = (patch: Partial<Design>) =>
     setDesign((d) => ({ ...d, ...patch }));
@@ -420,127 +551,169 @@ export default function App() {
       <main className="workspace">
         <aside className="library panel">
           <div className="panel-heading">
-            <h2>La colección</h2>
-            <span>01 — {String(templates.length).padStart(2, "0")}</span>
+            <h2>Fondo de la lámina</h2>
           </div>
-          <SectionLabel>ESTILO Y TRADICIÓN</SectionLabel>
           <div
-            className="traditions"
-            role="tablist"
-            aria-label="Estilo y tradición"
+            className="background-menu"
+            role="group"
+            aria-label="Fondo de la lámina"
           >
-            {traditions.map((t) => (
-              <button
-                role="tab"
-                aria-selected={tradition === t.id}
-                key={t.id}
-                className={tradition === t.id ? "active" : ""}
-                onClick={() => setTradition(t.id)}
+            <button
+              aria-pressed={!photoMode}
+              onClick={() => update({ backgroundMode: "frame" })}
+            >
+              <Layers size={15} />
+              Marco
+            </button>
+            <button
+              aria-pressed={photoMode}
+              onClick={() => {
+                update({ backgroundMode: "photo" });
+                setPanel("text");
+              }}
+            >
+              <ImageIcon size={15} />
+              Imagen de fondo
+            </button>
+          </div>
+          {photoMode ? (
+            <PhotoControls
+              key={design.id}
+              photo={design.photo}
+              onChange={(photo) =>
+                setDesign((current) =>
+                  current.id === design.id && current.backgroundMode === "photo"
+                    ? { ...current, photo }
+                    : current,
+                )
+              }
+            />
+          ) : (
+            <>
+              <SectionLabel>ESTILO Y TRADICIÓN</SectionLabel>
+              <div
+                className="traditions"
+                role="tablist"
+                aria-label="Estilo y tradición"
               >
-                <span>{t.mark}</span>
-                {t.label}
-              </button>
-            ))}
-          </div>
-          <div className="collection-caption">
-            <span>{traditions.find((t) => t.id === tradition)!.region}</span>
-            <span>
-              {templates.filter((t) => t.tradition === tradition).length} marcos
-            </span>
-          </div>
-          <div className="template-list">
-            {templates
-              .filter((t) => t.tradition === tradition)
-              .map((t) => (
-                <button
-                  className={`template-card ${design.template === t.id ? "selected" : ""}`}
-                  key={t.id}
-                  onClick={() => setDesign((d) => changeTemplate(d, t))}
-                  aria-pressed={design.template === t.id}
-                >
-                  <div className="template-art">
-                    <Composition
-                      design={{ ...freshDesign(t.id), format: "square" }}
-                      thumbnail
-                    />
-                    {design.template === t.id && (
-                      <span className="selected-mark">
-                        <Check size={12} />
-                      </span>
-                    )}
-                  </div>
-                  <div>
-                    <span className="template-number">
-                      {String(templates.indexOf(t) + 1).padStart(2, "0")}
-                    </span>
-                    <h3>{t.name}</h3>
-                    <p>{t.subtitle}</p>
-                  </div>
-                </button>
-              ))}
-          </div>
-          <div className="palette-section">
-            <SectionLabel>
-              PALETAS DE COLOR{" "}
-              <span className="subtle">/ {palettes.length}</span>
-            </SectionLabel>
-            <div className="palette-list">
-              {palettes.map((p) => (
-                <button
-                  key={p.name}
-                  title={p.name}
-                  aria-label={`Paleta ${p.name}`}
-                  aria-pressed={design.palette.name === p.name}
-                  className={`palette-chip ${design.palette.name === p.name ? "active" : ""}`}
-                  onClick={() => update({ palette: { ...p } })}
-                >
-                  <span style={{ background: p.paper }} />
-                  <span style={{ background: p.ornament }} />
-                  <span style={{ background: p.detail }} />
-                </button>
-              ))}
-            </div>
-            <p className="palette-name">
-              {design.palette.name}
-              <span>↗</span>
-            </p>
-          </div>
-          {presets.length > 0 && (
-            <div className="presets">
-              <SectionLabel>TUS PRESETS</SectionLabel>
-              {presets.map((p) => (
-                <div key={p.id}>
+                {traditions.map((t) => (
                   <button
-                    onClick={() => {
-                      update({ template: p.template, palette: p.palette });
-                      setTradition(
-                        templates.find((t) => t.id === p.template)!.tradition,
-                      );
-                    }}
+                    role="tab"
+                    aria-selected={tradition === t.id}
+                    key={t.id}
+                    className={tradition === t.id ? "active" : ""}
+                    onClick={() => setTradition(t.id)}
                   >
-                    {p.name}
+                    <span>{t.mark}</span>
+                    {t.label}
                   </button>
-                  <button
-                    aria-label={`Eliminar preset ${p.name}`}
-                    onClick={() => {
-                      const next = presets.filter((n) => n.id !== p.id);
-                      if (writeLocal(keys.presets, next)) setPresets(next);
-                    }}
-                  >
-                    <X size={12} />
-                  </button>
+                ))}
+              </div>
+              <div className="collection-caption">
+                <span>
+                  {traditions.find((t) => t.id === tradition)!.region}
+                </span>
+                <span>
+                  {templates.filter((t) => t.tradition === tradition).length}{" "}
+                  marcos
+                </span>
+              </div>
+              <div className="template-list">
+                {templates
+                  .filter((t) => t.tradition === tradition)
+                  .map((t) => (
+                    <button
+                      className={`template-card ${design.template === t.id ? "selected" : ""}`}
+                      key={t.id}
+                      onClick={() => setDesign((d) => changeTemplate(d, t))}
+                      aria-pressed={design.template === t.id}
+                    >
+                      <div className="template-art">
+                        <Composition
+                          design={{ ...freshDesign(t.id), format: "square" }}
+                          thumbnail
+                        />
+                        {design.template === t.id && (
+                          <span className="selected-mark">
+                            <Check size={12} />
+                          </span>
+                        )}
+                      </div>
+                      <div>
+                        <span className="template-number">
+                          {String(templates.indexOf(t) + 1).padStart(2, "0")}
+                        </span>
+                        <h3>{t.name}</h3>
+                        <p>{t.subtitle}</p>
+                      </div>
+                    </button>
+                  ))}
+              </div>
+              <div className="palette-section">
+                <SectionLabel>
+                  PALETAS DE COLOR{" "}
+                  <span className="subtle">/ {palettes.length}</span>
+                </SectionLabel>
+                <div className="palette-list">
+                  {palettes.map((p) => (
+                    <button
+                      key={p.name}
+                      title={p.name}
+                      aria-label={`Paleta ${p.name}`}
+                      aria-pressed={design.palette.name === p.name}
+                      className={`palette-chip ${design.palette.name === p.name ? "active" : ""}`}
+                      onClick={() => update({ palette: { ...p } })}
+                    >
+                      <span style={{ background: p.paper }} />
+                      <span style={{ background: p.ornament }} />
+                      <span style={{ background: p.detail }} />
+                    </button>
+                  ))}
                 </div>
-              ))}
-            </div>
+                <p className="palette-name">
+                  {design.palette.name}
+                  <span>↗</span>
+                </p>
+              </div>
+              {presets.length > 0 && (
+                <div className="presets">
+                  <SectionLabel>TUS PRESETS</SectionLabel>
+                  {presets.map((p) => (
+                    <div key={p.id}>
+                      <button
+                        onClick={() => {
+                          update({ template: p.template, palette: p.palette });
+                          setTradition(
+                            templates.find((t) => t.id === p.template)!
+                              .tradition,
+                          );
+                        }}
+                      >
+                        {p.name}
+                      </button>
+                      <button
+                        aria-label={`Eliminar preset ${p.name}`}
+                        onClick={() => {
+                          const next = presets.filter((n) => n.id !== p.id);
+                          if (writeLocal(keys.presets, next)) setPresets(next);
+                        }}
+                      >
+                        <X size={12} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <div className="library-note">
+                <Sparkles size={16} />
+                <p>
+                  Pequeñas páginas.
+                  <br />
+                  Infinitas maneras de sentir.
+                </p>
+              </div>
+            </>
           )}
-          <div className="library-note">
-            <Sparkles size={16} />
-            <p>
-              Pequeñas páginas.
-              <br />
-              Infinitas maneras de sentir.
-            </p>
-          </div>
         </aside>
         <section className="studio" aria-label="Lienzo de composición">
           <div className="studio-toolbar">
@@ -618,8 +791,8 @@ export default function App() {
           <div className="canvas-status">
             <span>
               <span className="status-dot" />
-              {width} × {height} px<span className="status-divider">/</span>SVG
-              vectorial
+              {width} × {height} px<span className="status-divider">/</span>
+              {photoMode ? "Imagen de fondo" : "SVG vectorial"}
             </span>
             <div className="zoom-controls">
               <button
@@ -654,32 +827,35 @@ export default function App() {
               </button>
             ))}
           </div>
-          <div className="template-story">
-            <span className="story-mark">
-              <Mark small />
-            </span>
-            <div>
-              <span className="eyebrow">
-                {traditions.find((t) => t.id === template.tradition)!.label} ·
-                MARCO {String(templates.indexOf(template) + 1).padStart(2, "0")}
+          {!photoMode && (
+            <div className="template-story">
+              <span className="story-mark">
+                <Mark small />
               </span>
-              <h2>{template.name}</h2>
-              <p>{template.description}</p>
-              {template.id === "offrule" && (
-                <button
-                  className="load-fragment"
-                  onClick={() => update(novoFragment)}
-                >
-                  Usar el fragmento de Salvador Novo
-                </button>
-              )}
+              <div>
+                <span className="eyebrow">
+                  {traditions.find((t) => t.id === template.tradition)!.label} ·
+                  MARCO{" "}
+                  {String(templates.indexOf(template) + 1).padStart(2, "0")}
+                </span>
+                <h2>{template.name}</h2>
+                <p>{template.description}</p>
+                {template.id === "offrule" && (
+                  <button
+                    className="load-fragment"
+                    onClick={() => update(novoFragment)}
+                  >
+                    Usar el fragmento de Salvador Novo
+                  </button>
+                )}
+              </div>
+              <span className="story-edition">
+                COLECCIÓN
+                <br />
+                <b>ORÍGENES</b>
+              </span>
             </div>
-            <span className="story-edition">
-              COLECCIÓN
-              <br />
-              <b>ORÍGENES</b>
-            </span>
-          </div>
+          )}
           <p className="canvas-hint">
             <span>✧</span> Cada palabra encuentra su lugar.
           </p>
@@ -692,24 +868,26 @@ export default function App() {
           >
             <button
               role="tab"
-              aria-selected={panel === "text"}
-              className={panel === "text" ? "active" : ""}
+              aria-selected={panel === "text" || photoMode}
+              className={panel === "text" || photoMode ? "active" : ""}
               onClick={() => setPanel("text")}
             >
               <Type size={15} />
               Tu texto
             </button>
-            <button
-              role="tab"
-              aria-selected={panel === "ornament"}
-              className={panel === "ornament" ? "active" : ""}
-              onClick={() => setPanel("ornament")}
-            >
-              <SlidersHorizontal size={15} />
-              Ornamento
-            </button>
+            {!photoMode && (
+              <button
+                role="tab"
+                aria-selected={panel === "ornament"}
+                className={panel === "ornament" ? "active" : ""}
+                onClick={() => setPanel("ornament")}
+              >
+                <SlidersHorizontal size={15} />
+                Ornamento
+              </button>
+            )}
           </div>
-          {panel === "text" ? (
+          {panel === "text" || photoMode ? (
             <div className="inspector-content" role="tabpanel">
               <SectionLabel>
                 PALABRAS QUE PERMANECEN <Feather size={13} />
@@ -1316,7 +1494,10 @@ export default function App() {
             >
               ←
             </button>
-            {template.name} · {currentPage + 1} / {pageCount}
+            {photoMode
+              ? design.photo?.name || "Imagen de fondo"
+              : template.name}{" "}
+            · {currentPage + 1} / {pageCount}
             <button
               className="button quiet"
               disabled={currentPage === pageCount - 1}
@@ -1404,7 +1585,9 @@ export default function App() {
                     <div>
                       <h3>{d.name || "Sin título"}</h3>
                       <span>
-                        {templates.find((t) => t.id === d.template)!.name}
+                        {d.backgroundMode === "photo"
+                          ? d.photo?.name || "Imagen de fondo"
+                          : templates.find((t) => t.id === d.template)!.name}
                       </span>
                     </div>
                     <button

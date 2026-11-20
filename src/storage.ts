@@ -1,3 +1,4 @@
+import { validPhoto } from "./photo";
 import {
   freshDesign,
   templates,
@@ -36,6 +37,8 @@ export function hydrateDesign(value: unknown): Design {
   return {
     ...base,
     ...data,
+    backgroundMode: data.backgroundMode === "photo" ? "photo" : "frame",
+    photo: validPhoto(data.photo) ? data.photo : null,
     palette: { ...base.palette, ...data.palette },
     layers: { ...base.layers, ...data.layers },
   };
