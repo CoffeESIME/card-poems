@@ -1,3 +1,4 @@
+import { formTemplates, formTraditions, type FormTemplateId } from "./formTemplates";
 import { variantTemplates, type VariantId } from "./variants";
 import { darkTemplates, type DarkTemplateId } from "./darkTemplates";
 import type { PhotoBackground } from "./photo";
@@ -14,6 +15,7 @@ import {
 export type FrameEdition = "classic" | "proposed";
 
 export type Tradition =
+  | (typeof formTraditions)[number]["id"]
   | "war"
   | "revolt"
   | "labor"
@@ -33,6 +35,7 @@ export type Tradition =
   | "french"
   | "wanderer";
 export type TemplateId =
+  | FormTemplateId
   | "offrule"
   | ProposalTemplateId
   | WarTemplateId
@@ -151,6 +154,7 @@ export const traditions: {
   region: string;
   mark: string;
 }[] = [
+  ...formTraditions,
   {
     id: "war",
     label: "Guerra y testimonio",
@@ -838,6 +842,7 @@ export const templates: Template[] = [
     },
   },
   ...collectiveTemplates,
+  ...formTemplates,
   ...warTemplates,
   {
     id: "offrule",

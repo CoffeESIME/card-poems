@@ -36,14 +36,21 @@ describe("ornamental library", () => {
       }
     expect(distinct.size).toBe(templates.length);
   });
-  it("exposes eighteen collections with stable unique template IDs in both editions", () => {
+  it("exposes twenty-five collections with unique template IDs in both editions", () => {
     const classic = templates.filter((t) => templateEdition(t) === "classic");
     const proposed = templates.filter((t) => templateEdition(t) === "proposed");
-    expect(new Set(templates.map((t) => t.id)).size).toBe(143);
-    expect(classic).toHaveLength(85);
-    expect(proposed).toHaveLength(58);
-    expect(traditions).toHaveLength(18);
+    expect(new Set(templates.map((t) => t.id)).size).toBe(157);
+    expect(classic).toHaveLength(92);
+    expect(proposed).toHaveLength(65);
+    expect(traditions).toHaveLength(25);
     const classicSizes: Record<string, number> = {
+      astronomy: 1,
+      science: 1,
+      celestial: 1,
+      sky: 1,
+      earth: 1,
+      numbers: 1,
+      symbols: 1,
       war: 4,
       revolt: 7,
       labor: 2,
@@ -55,6 +62,13 @@ describe("ornamental library", () => {
       absence: 4,
     };
     const proposedSizes: Record<string, number> = {
+      astronomy: 1,
+      science: 1,
+      celestial: 1,
+      sky: 1,
+      earth: 1,
+      numbers: 1,
+      symbols: 1,
       war: 4,
       revolt: 4,
       dark: 4,

@@ -13,6 +13,7 @@ import {
   textOutline,
   type TextColors,
 } from "./photo";
+import { formFrames } from "./FormFrames";
 import { warFrames } from "./WarFrames";
 import { collectiveFrames } from "./CollectiveFrames";
 import { landscapeFrames } from "./LandscapeFrames";
@@ -717,6 +718,7 @@ export function Composition({
   }
   const landscape =
     proposalFrames(d, id, w, h) ??
+    formFrames(d, w, h) ??
     warFrames(d, w, h) ??
     collectiveFrames(d, w, h) ??
     darkFrames(d, w, h) ??

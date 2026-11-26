@@ -1,10 +1,12 @@
 import { dimensions, type Design } from "./model";
 import { fontFamilies } from "./fonts";
 import { wrapPoem, paginateLines } from "./text";
+import { formClearance } from "./formTemplates";
 import { proposalClearance } from "./proposalTemplates";
 export function readingInset(d: Design) {
   const clearance = {
     ...proposalClearance,
+    ...formClearance,
     offrule: 95,
     sewnletter: 165,
     ravinerifle: 190,
